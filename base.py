@@ -69,6 +69,12 @@ def lprint(*args, **kwargs):
 
 def header():
 
+    lprint()
+    lprint(f"┌─────────────┐")
+    lprint(f"│ file header │")
+    lprint(f"└─────────────┘")
+    lprint()
+
     from os.path import realpath
     from sys import argv
 
@@ -92,7 +98,12 @@ def header():
 
 def python_version():
     from sys import version
-    lprint(f"\nrun Python version {version.split(' ')[0]}")
+    lprint()
+    lprint(f"┌────────────────┐")
+    lprint(f"│ python version │")
+    lprint(f"└────────────────┘")
+    lprint()
+    lprint(f"run Python version {version.split(' ')[0]}")
     return
 
 # DISPLAY VERSION HISTORY
@@ -101,20 +112,24 @@ _VERSION_HISTORY = {}
 
 def version_history():
 
-    current_version = list(_VERSION_HISTORY.keys())[-1]
+    version = list(_VERSION_HISTORY.keys())[-1]
 
     lprint()
-    lprint(f"'base.py' version: {current_version}")
+    lprint(f"┌────────────────┐")
+    lprint(f"│ module version │")
+    lprint(f"└────────────────┘")
+    lprint()
+    lprint(f"module version is '{version}'")
 
     lprint()
-    lprint(f":---------------:")
-    lprint(f":version history:")
-    lprint(f":---------------:")
+    lprint(f"┌──────────────────┐")
+    lprint(f"│ versions history │")
+    lprint(f"└──────────────────┘")
     
     for v in _VERSION_HISTORY.values():
         lprint(v)
 
-    return current_version
+    return version
 
 # all constants, methods and classes are imported
 # individually to clarify the usage of packages.
@@ -290,18 +305,17 @@ version 0.0 (21 March 2020 - 14 April 2025):
     constants:
 
         . _ESCAPE = True
-
 """
 
 if __name__ == "__main__":
 
     header()
     python_version()
-
+    version = version_history()
 
     # test list
     TESTS = [
-        current_version,
+        version,
         # "0.0",
         # "x.x",
         ]
@@ -312,6 +326,11 @@ if __name__ == "__main__":
 
     if "0.0" in TESTS:
 
+        lprint()
+        lprint(f"┌──────┐")
+        lprint(f"│ TEST │")
+        lprint(f"└──────┘")
+        lprint()
         lprint("running test version 0.0")
 
         a = app()
