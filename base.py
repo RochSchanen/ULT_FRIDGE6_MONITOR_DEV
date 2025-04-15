@@ -1,19 +1,20 @@
 # file: base.py
 # content: App class definition
 # created: 2020 March 21
-# modified: 2025 April 14
+# modified: 2025 April 15
 # author: Roch Schanen
 # repository:
 # comment:
 
 # CONFIGURATION
 
-_LOG_FILE = "tmp.log"
+_LOG_FILE = "./tmp.log"
 
 _DEBUG_FLAGS = [
     # 'ALL',
     # 'NONE',
     'LOG',
+    # 'CHECKFLAGS'
 ]
 
 """ 
@@ -41,7 +42,7 @@ _DEBUG_FLAGS = [
 
 """
 
-# LOGGING
+# DEFINE DEBUG FUNCTIONS
 
 def debug(*flags):
     if "NONE" in _DEBUG_FLAGS: return False
@@ -55,6 +56,16 @@ def debug(*flags):
     # use 'NONE' to bypass all debug messages
     return True
 
+def setupDebugFlags(*flags):
+    global _DEBUG_FLAGS
+    for f in flags:
+        if not f.upper() in _DEBUG_FLAGS:
+            _DEBUG_FLAGS.append(f.upper())
+    if debug('checkflags'): print(_DEBUG_FLAGS)
+    return
+
+# DEFINE LOG FUNCTIONS
+
 _LOG_FILE_HANDLE = None
 if debug('LOG'): _LOG_FILE_HANDLE = open(_LOG_FILE, "w")
 
@@ -65,24 +76,61 @@ def lprint(*args, **kwargs):
     print(*args, **kwargs)
     return
 
+# DEFINE SYSTEM DEPENDENT FUNCTIONS
+
+def _boxprint_linux(s):
+    n = len(s)+2
+    lprint()
+    lprint(f"┌{'─'*n}┐")
+    lprint(f"│ { s } │")
+    lprint(f"└{'─'*n}┘")
+    lprint()
+    return
+
+def _boxprint_default(s):
+    n = len(s)+2
+    lprint()
+    lprint(f":{'-'*n}:")
+    lprint(f": { s } :")
+    lprint(f":{'-'*n}:")
+    lprint()
+    return
+
+# LOAD SYSTEM DEPENDENT CONFIGURATION
+
+from platform import system as _OS
+_OS_CONFIG = {
+    'Linux'  : {'boxprint': _boxprint_linux},
+    'Darwin' : {'boxprint': _boxprint_default},
+    'Windows': {'boxprint': _boxprint_default},
+
+}[_OS()]
+
+# SETUP SYSTEM DEPENDENT CONFIGURATION
+
+boxprint = _OS_CONFIG['boxprint']
+
+# DISPLAY OS
+
+def os_version():
+    boxprint(f"operating system")
+    lprint(f"OS is {_OS()}")
+    return _OS()
+
 # DISPLAY FILE HEADER
 
 def header():
 
-    lprint()
-    lprint(f"┌─────────────┐")
-    lprint(f"│ file header │")
-    lprint(f"└─────────────┘")
-    lprint()
+    boxprint(f"file header")
 
     from os.path import realpath
     from sys import argv
 
     # get main script content
-    fp = realpath(argv[0])  # file path
-    fh = open(fp, 'r')      # file handle
-    ft = fh.read()          # file text
-    fh.close()              # done
+    fp = realpath(argv[0])                  # file path
+    fh = open(fp, 'r', encoding='utf-8')    # file handle
+    ft = fh.read()                          # file text
+    fh.close()                              # done
 
     # print every lines while they begin with #
     L = ft.split('\n')
@@ -98,11 +146,7 @@ def header():
 
 def python_version():
     from sys import version
-    lprint()
-    lprint(f"┌────────────────┐")
-    lprint(f"│ python version │")
-    lprint(f"└────────────────┘")
-    lprint()
+    boxprint(f"python version")
     lprint(f"run Python version {version.split(' ')[0]}")
     return
 
@@ -114,17 +158,10 @@ def version_history():
 
     version = list(_VERSION_HISTORY.keys())[-1]
 
-    lprint()
-    lprint(f"┌────────────────┐")
-    lprint(f"│ module version │")
-    lprint(f"└────────────────┘")
-    lprint()
+    boxprint(f"module version")
     lprint(f"module version is '{version}'")
 
-    lprint()
-    lprint(f"┌──────────────────┐")
-    lprint(f"│ versions history │")
-    lprint(f"└──────────────────┘")
+    boxprint(f"versions history")
     
     for v in _VERSION_HISTORY.values():
         lprint(v)
@@ -137,51 +174,51 @@ def version_history():
 # from wxpython: https://www.wxpython.org/
 
 # classes
-from wx import Panel                as wxPanel
-from wx import Frame                as wxFrame
-from wx import App                  as wxApp
+from wx import Panel                as _wxPanel
+from wx import Frame                as _wxFrame
+from wx import App                  as _wxApp
 
 # wx classes default constants
-from wx import ID_ANY               as wxID_ANY
-from wx import DefaultPosition      as wxDefaultPosition
-from wx import DefaultSize          as wxDefaultSize
-from wx import NO_BORDER            as wxNO_BORDER
-from wx import DEFAULT_FRAME_STYLE  as wxDEFAULT_FRAME_STYLE
-from wx import RESIZE_BORDER        as wxRESIZE_BORDER
-from wx import MAXIMIZE_BOX         as wxMAXIMIZE_BOX
+from wx import ID_ANY               as _wxID_ANY
+from wx import DefaultPosition      as _wxDefaultPosition
+from wx import DefaultSize          as _wxDefaultSize
+from wx import NO_BORDER            as _wxNO_BORDER
+from wx import DEFAULT_FRAME_STYLE  as _wxDEFAULT_FRAME_STYLE
+from wx import RESIZE_BORDER        as _wxRESIZE_BORDER
+from wx import MAXIMIZE_BOX         as _wxMAXIMIZE_BOX
 
 # wx bitmap methods
-from wx import PaintDC as wxPaintDC
+from wx import PaintDC as _wxPaintDC
 
 # wx event constants
-from wx import EVT_PAINT            as wxEVT_PAINT
-from wx import EVT_KEY_DOWN         as wxEVT_KEY_DOWN
-from wx import WXK_ESCAPE           as wxWXK_ESCAPE
-from wx import EVT_ERASE_BACKGROUND as wxEVT_ERASE_BACKGROUND
+from wx import EVT_PAINT            as _wxEVT_PAINT
+from wx import EVT_KEY_DOWN         as _wxEVT_KEY_DOWN
+from wx import WXK_ESCAPE           as _wxWXK_ESCAPE
+from wx import EVT_ERASE_BACKGROUND as _wxEVT_ERASE_BACKGROUND
 
 # wx system
-from wx import Exit                 as wxExit
+from wx import Exit                 as _wxExit
 
 # Quick Panel
-class _basePanel(wxPanel):
+class _basePanel(_wxPanel):
 
     def __init__(self, parent):
 
-        wxPanel.__init__(
+        _wxPanel.__init__(
             self,
             parent = parent,
-            id     = wxID_ANY,
-            pos    = wxDefaultPosition,
-            size   = wxDefaultSize,
-            style  = wxNO_BORDER,
+            id     = _wxID_ANY,
+            pos    = _wxDefaultPosition,
+            size   = _wxDefaultSize,
+            style  = _wxNO_BORDER,
             name   = "")
 
         # BackgroundBitmaps are used to draw decors
         self.BackgroundBitmap = None
 
         # bind paint event
-        # self.Bind(wxEVT_ERASE_BACKGROUND, self._onEraseBackground)
-        self.Bind(wxEVT_PAINT, self._OnPaint)
+        # self.Bind(_wxEVT_ERASE_BACKGROUND, self._onEraseBackground)
+        self.Bind(_wxEVT_PAINT, self._OnPaint)
 
         # done
         return
@@ -197,27 +234,27 @@ class _basePanel(wxPanel):
 
             # "DCPaint" is used here.
             # but maybe "BufferedPaintDC" should be used instead?
-            dc = wxPaintDC(self)
+            dc = _wxPaintDC(self)
             dc.DrawBitmap(self.BackgroundBitmap, 0, 0)
 
         #done
         return
 
 # Quick Frame
-class _baseFrm(wxFrame):
+class _baseFrm(_wxFrame):
 
     def __init__(self):
 
-        wxFrame.__init__(
+        _wxFrame.__init__(
             self,
             parent = None,
-            id     = wxID_ANY,
+            id     = _wxID_ANY,
             title  = "",
-            pos    = wxDefaultPosition,
-            size   = wxDefaultSize,
-            style  = wxDEFAULT_FRAME_STYLE
-                    ^ wxRESIZE_BORDER
-                    ^ wxMAXIMIZE_BOX,
+            pos    = _wxDefaultPosition,
+            size   = _wxDefaultSize,
+            style  = _wxDEFAULT_FRAME_STYLE
+                    ^ _wxRESIZE_BORDER
+                    ^ _wxMAXIMIZE_BOX,
             name   = "")
 
         # create the panel
@@ -234,7 +271,7 @@ class _baseFrm(wxFrame):
 _ESCAPE = True
 
 # Quick App
-class app(wxApp):
+class app(_wxApp):
 
     def OnInit(self):
         # create reference to App
@@ -250,7 +287,7 @@ class app(wxApp):
             w, h = self.Frame.Panel.BackgroundBitmap.GetSize()
             self.Frame.SetClientSize((w, h))
         # bind key events
-        self.Bind(wxEVT_KEY_DOWN, self._OnKeyDown)
+        self.Bind(_wxEVT_KEY_DOWN, self._OnKeyDown)
         # show the frame
         self.Frame.Show(True)
         # done
@@ -265,6 +302,7 @@ class app(wxApp):
         self.MainLoop()
         return
 
+    # the following can be overwritten by 
     def _OnKeyDown(self, event):
         
         key = event.GetKeyCode()
@@ -275,8 +313,8 @@ class app(wxApp):
         # be removed at later time.
 
         if _ESCAPE:
-            if key == wxWXK_ESCAPE:
-                wxExit()
+            if key == _wxWXK_ESCAPE:
+                _wxExit()
                 return
 
         event.Skip() # forward event
@@ -285,7 +323,7 @@ class app(wxApp):
         return
 
 _VERSION_HISTORY["0.0"] = """
-version 0.0 (21 March 2020 - 14 April 2025):
+version 0.0 (21 March 2020 - 15 April 2025):
 
     classes:
         
@@ -299,25 +337,52 @@ version 0.0 (21 March 2020 - 14 April 2025):
 
     functions:
 
+        . setupDebugFlags(*flags)
+        . debug(*flags)
+        . lprint(*args, **kwargs)
+        . boxprint(s)
+        . os_version()
         . header()
         . python_version()
+        . version_history()
+
+    variables:
 
     constants:
 
-        . _ESCAPE = True
+        . _ESCAPE 
+
+        . _wxPanel
+        . _wxFrame
+        . _wxApp
+        . _wxID_ANY
+        . _wxDefaultPosition
+        . _wxDefaultSize
+        . _wxNO_BORDER
+        . _wxDEFAULT_FRAME_STYLE
+        . _wxRESIZE_BORDER
+        . _wxMAXIMIZE_BOX
+        . _wxPaintDC
+        . _wxEVT_PAINT
+        . _wxEVT_KEY_DOWN
+        . _wxWXK_ESCAPE
+        . _wxEVT_ERASE_BACKGROUND
+        . _wxExit
+
 """
 
 if __name__ == "__main__":
 
     header()
+    os_version()
     python_version()
     version = version_history()
 
     # test list
     TESTS = [
         version,
-        # "0.0",
-        # "x.x",
+        # "1.0",
+        # "2.0",
         ]
 
     #############
@@ -326,11 +391,7 @@ if __name__ == "__main__":
 
     if "0.0" in TESTS:
 
-        lprint()
-        lprint(f"┌──────┐")
-        lprint(f"│ TEST │")
-        lprint(f"└──────┘")
-        lprint()
+        boxprint(f"TEST")
         lprint("running test version 0.0")
 
         a = app()

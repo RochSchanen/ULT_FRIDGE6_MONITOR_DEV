@@ -1,0 +1,88 @@
+
+:-------------:
+: file header :
+:-------------:
+
+# content: App class definition
+# created: 2020 March 21
+# modified: 2025 April 15
+# author: Roch Schanen
+# repository:
+# comment:
+
+:------------------:
+: operating system :
+:------------------:
+
+OS is Windows
+
+:----------------:
+: python version :
+:----------------:
+
+run Python version 3.13.1
+
+:----------------:
+: module version :
+:----------------:
+
+module version is '0.0'
+
+:------------------:
+: versions history :
+:------------------:
+
+
+version 0.0 (21 March 2020 - 15 April 2025):
+
+    classes:
+        
+        . _basePanel(parent)        
+        
+        . _baseFrm()
+        
+        . app()
+            app.Start()
+            app.Run()
+
+    functions:
+
+        . setupDebugFlags(*flags)
+        . debug(*flags)
+        . lprint(*args, **kwargs)
+        . boxprint(s)
+        . os_version()
+        . header()
+        . python_version()
+        . version_history()
+
+    variables:
+
+    constants:
+
+        . _ESCAPE 
+
+        . _wxPanel
+        . _wxFrame
+        . _wxApp
+        . _wxID_ANY
+        . _wxDefaultPosition
+        . _wxDefaultSize
+        . _wxNO_BORDER
+        . _wxDEFAULT_FRAME_STYLE
+        . _wxRESIZE_BORDER
+        . _wxMAXIMIZE_BOX
+        . _wxPaintDC
+        . _wxEVT_PAINT
+        . _wxEVT_KEY_DOWN
+        . _wxWXK_ESCAPE
+        . _wxEVT_ERASE_BACKGROUND
+        . _wxExit
+
+
+
+:------:
+: TEST :
+:------:
+
+running test version 0.0
