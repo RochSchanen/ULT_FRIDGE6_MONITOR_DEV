@@ -323,7 +323,8 @@ class app(_wxApp):
         return
 
 _VERSION_HISTORY["0.0"] = """
-version 0.0 (21 March 2020 - 15 April 2025):
+version 0.0
+(21 March 2020 - 15 April 2025):
 
     classes:
         
@@ -349,6 +350,14 @@ version 0.0 (21 March 2020 - 15 April 2025):
     variables:
 
     constants:
+
+        . _LOG_FILE
+        . _DEBUG_FLAGS
+        . _LOG_FILE_HANDLE
+
+        . _OS_CONFIG
+
+        . _VERSION_HISTORY
 
         . _ESCAPE 
 
