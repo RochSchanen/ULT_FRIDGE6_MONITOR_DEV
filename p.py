@@ -1,18 +1,10 @@
-from tools import debug_new
+# file: tools.py
+# content: coding tools
+# created: 2025 April 17
+# modified: 2025 April 17
+# author: Roch Schanen
+# repository:
+# comment:
 
-# log = log_obj("tmp.log")
+from tools import *
 
-debug = debug_new(
-  'none',
-  # 'all',
-  # 'log',
-  )
-
-if debug.flag('log'):
-    print("log")
-
-if debug.flag('hello'):
-    print("hello")
-
-if debug.flag():
-    print("default")

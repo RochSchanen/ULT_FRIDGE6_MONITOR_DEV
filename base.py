@@ -6,16 +6,21 @@
 # repository:
 # comment:
 
-# CONFIGURATION
+_VERSION_HISTORY = {}
 
-_LOG_FILE = "./tmp.log"
-
-_DEBUG_FLAGS = [
+from tools import debug_class
+debug = debug_class(
     # 'ALL',
     # 'NONE',
+    # 'OS',
+    'HEADER',
+    # 'PYTHON',
+    'HISTORY',
     'LOG',
-    # 'CHECKFLAGS'
-]
+    )
+
+from tools import log_class
+log = log_class("./tmp.log")
 
 """ 
     --- motivation ---
@@ -35,138 +40,7 @@ _DEBUG_FLAGS = [
     is used by default as a canvas for the layout class
     to draw the app's decorations.
 
-    --- additional features ---
-
-    additional functions are included that help to debug
-    and log some data. 
-
 """
-
-# DEFINE DEBUG FUNCTIONS
-
-def debug(*flags):
-    if "NONE" in _DEBUG_FLAGS: return False
-    if "ALL"  in _DEBUG_FLAGS: return True
-    for f in flags:
-        if f.upper() in _DEBUG_FLAGS:
-            return True
-    if flags: # no valid flags
-        return False
-    # an empty set of parameter always returns True
-    # use 'NONE' to bypass all debug messages
-    return True
-
-def setupDebugFlags(*flags):
-    global _DEBUG_FLAGS
-    for f in flags:
-        if not f.upper() in _DEBUG_FLAGS:
-            _DEBUG_FLAGS.append(f.upper())
-    if debug('checkflags'): print(_DEBUG_FLAGS)
-    return
-
-# DEFINE LOG FUNCTIONS
-
-_LOG_FILE_HANDLE = None
-if debug('LOG'): _LOG_FILE_HANDLE = open(_LOG_FILE, "w")
-
-def lprint(*args, **kwargs):
-    print(*args, **kwargs)
-    if _LOG_FILE_HANDLE is None: return
-    kwargs["file"] = _LOG_FILE_HANDLE
-    print(*args, **kwargs)
-    return
-
-# DEFINE SYSTEM DEPENDENT FUNCTIONS
-
-def _boxprint_linux(s):
-    n = len(s)+2
-    lprint()
-    lprint(f"┌{'─'*n}┐")
-    lprint(f"│ { s } │")
-    lprint(f"└{'─'*n}┘")
-    lprint()
-    return
-
-def _boxprint_default(s):
-    n = len(s)+2
-    lprint()
-    lprint(f":{'-'*n}:")
-    lprint(f": { s } :")
-    lprint(f":{'-'*n}:")
-    lprint()
-    return
-
-# LOAD SYSTEM DEPENDENT CONFIGURATION
-
-from platform import system as _OS
-_OS_CONFIG = {
-    'Linux'  : {'boxprint': _boxprint_linux},
-    'Darwin' : {'boxprint': _boxprint_default},
-    'Windows': {'boxprint': _boxprint_default},
-
-}[_OS()]
-
-# SETUP SYSTEM DEPENDENT CONFIGURATION
-
-boxprint = _OS_CONFIG['boxprint']
-
-# DISPLAY OS
-
-def os_version():
-    boxprint(f"operating system")
-    lprint(f"OS is {_OS()}")
-    return _OS()
-
-# DISPLAY FILE HEADER
-
-def header():
-
-    boxprint(f"file header")
-
-    from os.path import realpath
-    from sys import argv
-
-    # get main script content
-    fp = realpath(argv[0])                  # file path
-    fh = open(fp, 'r', encoding='utf-8')    # file handle
-    ft = fh.read()                          # file text
-    fh.close()                              # done
-
-    # print every lines while they begin with #
-    L = ft.split('\n')
-    for l in L[1:]:
-        if not l: break
-        if not l[0]=="#": break
-        lprint(l)
-
-    # done
-    return
-
-# DISPLAY PYTHON VERSION
-
-def python_version():
-    from sys import version
-    boxprint(f"python version")
-    lprint(f"run Python version {version.split(' ')[0]}")
-    return
-
-# DISPLAY VERSION HISTORY
-
-_VERSION_HISTORY = {}
-
-def version_history():
-
-    version = list(_VERSION_HISTORY.keys())[-1]
-
-    boxprint(f"module version")
-    lprint(f"module version is '{version}'")
-
-    boxprint(f"versions history")
-    
-    for v in _VERSION_HISTORY.values():
-        lprint(v)
-
-    return version
 
 # all constants, methods and classes are imported
 # individually to clarify the usage of packages.
@@ -323,41 +197,25 @@ class app(_wxApp):
         return
 
 _VERSION_HISTORY["0.0"] = """
-version 0.0
-(21 March 2020 - 15 April 2025):
+version  : 0.0
+created  : 21 March 2020
+modified : 20 April 2025
 
     classes:
-        
-        . _basePanel(parent)        
-        
-        . _baseFrm()
-        
+
         . app()
             app.Start()
             app.Run()
 
-    functions:
+    hidden classes:
+        
+        . _basePanel(parent)        
+        
+        . _baseFrm()
+            
+    hidden constants:
 
-        . setupDebugFlags(*flags)
-        . debug(*flags)
-        . lprint(*args, **kwargs)
-        . boxprint(s)
-        . os_version()
-        . header()
-        . python_version()
-        . version_history()
-
-    variables:
-
-    constants:
-
-        . _LOG_FILE
-        . _DEBUG_FLAGS
-        . _LOG_FILE_HANDLE
-
-        . _OS_CONFIG
-
-        . _VERSION_HISTORY
+        . _VERSION_HISTORY['0.0']
 
         . _ESCAPE 
 
@@ -377,22 +235,30 @@ version 0.0
         . _wxWXK_ESCAPE
         . _wxEVT_ERASE_BACKGROUND
         . _wxExit
-
 """
 
 if __name__ == "__main__":
 
-    header()
-    os_version()
-    python_version()
-    version = version_history()
-
     # test list
     TESTS = [
-        version,
+        list(_VERSION_HISTORY.keys())[-1],
         # "1.0",
         # "2.0",
         ]
+
+    if debug.flag('LOG'):
+        
+        if debug.flag('HEADER'):
+            log.display_file_header()
+        
+        if debug.flag('OS'):
+            log.display_os_version()
+        
+        if debug.flag('PYTHON'):
+            log.display_python_version()
+        
+        if debug.flag('HISTORY'):
+            log.display_version_history(_VERSION_HISTORY)
 
     #############
     # tests 0.0 #
@@ -400,8 +266,9 @@ if __name__ == "__main__":
 
     if "0.0" in TESTS:
 
-        boxprint(f"TEST")
-        lprint("running test version 0.0")
+        if debug.flag('LOG'):
+            log.boxprint(f"TEST")
+            log.print("running test version 0.0")
 
         a = app()
         a.Run()
