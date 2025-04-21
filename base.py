@@ -1,26 +1,10 @@
 # file: base.py
 # content: App class definition
 # created: 2020 March 21
-# modified: 2025 April 15
+# modified: 2025 April 21
 # author: Roch Schanen
 # repository:
 # comment:
-
-_VERSION_HISTORY = {}
-
-from tools import debug_class
-debug = debug_class(
-    # 'ALL',
-    # 'NONE',
-    # 'OS',
-    'HEADER',
-    # 'PYTHON',
-    'HISTORY',
-    'LOG',
-    )
-
-from tools import log_class
-log = log_class("./tmp.log")
 
 """ 
     --- motivation ---
@@ -34,13 +18,60 @@ log = log_class("./tmp.log")
     On instantiating an "App" object, a frame is
     automatically created and a panel container is
     created too that fills the frame window.
-    
+
     A "BackgroundBitmap" is instantiated and is used to
     paint the panel background. This "BackgroundBitmap"
     is used by default as a canvas for the layout class
     to draw the app's decorations.
 
+    --- requirements ---
+
+    tools, wxpython.
+
 """
+
+from tools import *
+
+#####################################################################
+#                                                           ### DEBUG
+debug = debug_class(
+    # 'ALL',
+    # 'NONE',
+    # 'LOG',
+    'VERBOSE',
+    'ESCAPE',
+    )
+
+#####################################################################
+#                                                             ### LOG
+
+log = log_class("./base.py.log" if debug.flag('LOG') else "")
+
+#####################################################################
+#                                                         ### HISTORY
+_HISTORY = {
+
+    ### VERSION 0.00
+
+    "0.00": """
+    content:
+
+        . app()
+            app.Start()
+            app.Run()
+        """,
+}
+
+#####################################################################
+#                                                    ### SELECT TESTS
+
+TESTS = [
+    # "X.XX",               # run test for version X.XX
+    sorted(_HISTORY)[-1],   # run test for last version
+    ]
+
+#####################################################################
+#                                                         ### IMPORTS
 
 # all constants, methods and classes are imported
 # individually to clarify the usage of packages.
@@ -72,6 +103,9 @@ from wx import EVT_ERASE_BACKGROUND as _wxEVT_ERASE_BACKGROUND
 
 # wx system
 from wx import Exit                 as _wxExit
+
+#####################################################################
+#                                                         ### LIBRARY
 
 # Quick Panel
 class _basePanel(_wxPanel):
@@ -139,11 +173,10 @@ class _baseFrm(_wxFrame):
         # done
         return
 
-# When the constant _ESCAPE = True you can use the
-# ESCAPE key to quit the Application. this is used
-# for debbugging and should be disabled at later time.
-_ESCAPE = True
-
+# When the ESCAPE flag is set you can use the
+# ESCAPE key to quit the Application. this is
+# used for debbugging purposes.
+ 
 # Quick App
 class app(_wxApp):
 
@@ -181,12 +214,11 @@ class app(_wxApp):
         
         key = event.GetKeyCode()
 
-        # catch the ESCAPE key and exit the app
-        # when the _ESCAPE flag is set. This is
-        # used for development purposes. It will
-        # be removed at later time.
+        # catch the ESCAPE key and exit
+        # the app when the ESCAPE flag
+        # is set.
 
-        if _ESCAPE:
+        if debug.flag("escape"):
             if key == _wxWXK_ESCAPE:
                 _wxExit()
                 return
@@ -196,79 +228,37 @@ class app(_wxApp):
         # done
         return
 
-_VERSION_HISTORY["0.0"] = """
-version  : 0.0
-created  : 21 March 2020
-modified : 20 April 2025
-
-    classes:
-
-        . app()
-            app.Start()
-            app.Run()
-
-    hidden classes:
-        
-        . _basePanel(parent)        
-        
-        . _baseFrm()
-            
-    hidden constants:
-
-        . _VERSION_HISTORY['0.0']
-
-        . _ESCAPE 
-
-        . _wxPanel
-        . _wxFrame
-        . _wxApp
-        . _wxID_ANY
-        . _wxDefaultPosition
-        . _wxDefaultSize
-        . _wxNO_BORDER
-        . _wxDEFAULT_FRAME_STYLE
-        . _wxRESIZE_BORDER
-        . _wxMAXIMIZE_BOX
-        . _wxPaintDC
-        . _wxEVT_PAINT
-        . _wxEVT_KEY_DOWN
-        . _wxWXK_ESCAPE
-        . _wxEVT_ERASE_BACKGROUND
-        . _wxExit
-"""
+#####################################################################
+#                                                           ### TESTS
 
 if __name__ == "__main__":
 
-    # test list
-    TESTS = [
-        list(_VERSION_HISTORY.keys())[-1],
-        # "1.0",
-        # "2.0",
-        ]
-
     if debug.flag('LOG'):
         
-        if debug.flag('HEADER'):
+        if debug.flag('VERBOSE'):
             log.display_file_header()
-        
-        if debug.flag('OS'):
             log.display_os_version()
-        
-        if debug.flag('PYTHON'):
             log.display_python_version()
-        
-        if debug.flag('HISTORY'):
-            log.display_version_history(_VERSION_HISTORY)
+            log.display_history(_HISTORY)
 
     #############
     # tests 0.0 #
     #############
 
-    if "0.0" in TESTS:
+    if "0.00" in TESTS:
 
         if debug.flag('LOG'):
             log.boxprint(f"TEST")
-            log.print("running test version 0.0")
+            log.print("running test version 0.00")
+
+        a = app()
+        a.Run()
+
+    if "1.00" in TESTS:
+
+        if debug.flag('LOG'):
+            log.boxprint(f"TEST")
+            log.print("running test version 1.00")
 
         a = app()
         a.Run()

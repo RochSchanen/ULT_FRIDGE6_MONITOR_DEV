@@ -6,5 +6,8 @@
 # repository:
 # comment:
 
-from tools import *
-
+fp = "./base.py.log"
+fp = ""
+fh = open(fp, 'r') if fp else None
+print(fh)
+if fh: fh.close()

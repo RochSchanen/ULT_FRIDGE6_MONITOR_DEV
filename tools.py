@@ -6,11 +6,14 @@
 # repository:
 # comment:
 
-"""    --- motivation ---
+"""
+    --- motivation ---
 
-    A tool box library to help with code debugging, logging, etc.
-    - The debug class to help managing flags.
-    - The log class to display and log messages.
+    This is a minimal library to help with
+    debugging and logging:
+    - The debug class helps detecting set flags.
+    - The log class helps to display and log basic
+    messages.
 
 """
 
@@ -36,7 +39,7 @@ class log_class():
 
     def print(self, *args, **kwargs):
         print(*args, **kwargs)
-        if not self.file_handle: return
+        if self.file_handle is None: return
         kwargs["file"] = self.file_handle
         print(*args, **kwargs)
         return
@@ -59,7 +62,8 @@ class log_class():
         self.print()
         return
 
-    def __init__(self, filepath):
+    def __init__(self, filepath = ""):
+        # os dependent configuration
         from platform import system as _OS
         _CONFIG = {
             'Linux'  : {'boxprint': self._boxprint_linux},
@@ -67,18 +71,20 @@ class log_class():
             'Windows': {'boxprint': self._boxprint_default},
 
         }[_OS()]
+        # os dependent setup
         self.boxprint = _CONFIG['boxprint']
-        self.file_handle = open(filepath, "w")
+        # file setup
+        self.file_handle = open(filepath, "w") if filepath else None
         return
 
     def display_file_header(self):
         from os.path import realpath
         from sys import argv
         # get main script content
-        fp = realpath(argv[0])                  # file path
-        fh = open(fp, 'r', encoding='utf-8')    # file handle
-        ft = fh.read()                          # file text
-        fh.close()                              # done
+        fp = realpath(argv[0])                  # get file path
+        fh = open(fp, 'r', encoding='utf-8')    # get file handle
+        ft = fh.read()                          # get file text
+        fh.close()                              # done with file
         # display title
         self.boxprint(f"file header")
         # print every lines while they begin with #
@@ -102,11 +108,12 @@ class log_class():
         self.print(f"run Python version {version.split(' ')[0]}")
         return
 
-    def display_version_history(self, history):
+    def display_history(self, history):
         version = list(history.keys())[-1]
         self.boxprint(f"code version")
-        self.print(f"code version is '{version}'")
+        self.print(f"'{version}'")
         self.boxprint(f"versions history")
-        for v in history.values():
-            self.print(v)
+        for k in sorted(history):
+            self.print(f"version {k}:")
+            self.print(history[k])
         return version

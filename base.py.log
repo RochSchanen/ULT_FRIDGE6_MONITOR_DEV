@@ -1,0 +1,49 @@
+
+:-------------:
+: file header :
+:-------------:
+
+# file: base.py
+# content: App class definition
+# created: 2020 March 21
+# modified: 2025 April 21
+# author: Roch Schanen
+# repository:
+# comment:
+
+:------------------:
+: operating system :
+:------------------:
+
+OS is Windows
+
+:----------------:
+: python version :
+:----------------:
+
+run Python version 3.13.1
+
+:--------------:
+: code version :
+:--------------:
+
+'0.00'
+
+:------------------:
+: versions history :
+:------------------:
+
+version 0.00:
+
+    content:
+
+        . app()
+            app.Start()
+            app.Run()
+        
+
+:------:
+: TEST :
+:------:
+
+running test version 0.00
