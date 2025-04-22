@@ -1,15 +1,18 @@
 # file: base.py
 # content: App class definition
 # created: 2020 March 21
-# modified: 2025 April 21
+# modified: 2025 April 22
 # author: Roch Schanen
-# repository:
-# comment:
+# repository: https://GitHub.com/RochSchanen/ULT_FRIDGE6_MONITOR_DEV
 
-""" 
+#####################################################################
+#                                                     ### DESCRIPTION
+#
+_DESCRIPTION = """   
+    
     --- motivation ---
 
-    This is a mini-library to simplify GUI programing.
+    This is a mini-library to simplify GUI programming.
     The base module is used to create the main window
     and start the main application.
 
@@ -21,58 +24,80 @@
 
     A "BackgroundBitmap" is instantiated and is used to
     paint the panel background. This "BackgroundBitmap"
-    is used by default as a canvas for the layout class
-    to draw the app's decorations.
+    is used by default as the canvas for the "layout"
+    class to draw all the app's decorations.
 
     --- requirements ---
 
-    tools, wxpython.
+    The module "base" requires the module "tools" to be
+    present and the package "wxpython" to be installed.
 
 """
 
-from tools import *
+#####################################################################
+#                                                         ### HISTORY
+# The only available versions is "0.00"
+#
+_HISTORY = {
+
+    "0.00": """
+        Add 'app' class:
+            
+            . 'app.__init__()' doesn't require any parameters.
+
+            . 'app.Start()', which must be overloaded by the user,
+            is used to initialise the user part of the app.
+            'app.Start()' is called automatically after the 'main
+            Window', the 'main Frame', and the 'main Panel' have
+            been instantiated.
+            
+            . 'app.Run()' is used to run the app and must be called
+            by the user after the app instantiation.
+
+    """,
+}
 
 #####################################################################
 #                                                           ### DEBUG
-debug = debug_class(
+# uncomment line to set any flag:
+#
+# . NONE    : clears all flags (precedes the 'ALL' flag)
+# . ALL     : sets all flags (all flags are selected except 'NONE')
+# . LOG     : log messages to file
+# . VERBOSE : display extra informations
+# . TEST    : enable the selected tests
+# . ESCAPE  : enable the escape key for exiting the app
+#
+from tools import debug_class
+_debug = debug_class(
     # 'ALL',
     # 'NONE',
-    # 'LOG',
-    'VERBOSE',
+    'VERBOSE',  # only performed when __main__
+    'TESTS',    # only performed when __main__
+    'LOG',
     'ESCAPE',
     )
 
 #####################################################################
 #                                                             ### LOG
-
-log = log_class("./base.py.log" if debug.flag('LOG') else "")
-
-#####################################################################
-#                                                         ### HISTORY
-_HISTORY = {
-
-    ### VERSION 0.00
-
-    "0.00": """
-    content:
-
-        . app()
-            app.Start()
-            app.Run()
-        """,
-}
+# The default log file is 'base.py.log'
+# Use the debugging 'LOG' flag to activate messages logging.
+#
+from tools import log_class
+_log = log_class("./base.py.log" if _debug.flag('LOG') else "")
 
 #####################################################################
-#                                                    ### SELECT TESTS
-
-TESTS = [
-    # "X.XX",               # run test for version X.XX
-    sorted(_HISTORY)[-1],   # run test for last version
-    ]
+#                                                            ### TEST
+#
+if _debug.flag('TESTS'):
+    _test = debug_class(
+        sorted(_HISTORY)[-1],   # run last version
+        # "X.XX",               # run version X.XX
+        )
 
 #####################################################################
 #                                                         ### IMPORTS
-
+#
 # all constants, methods and classes are imported
 # individually to clarify the usage of packages.
 
@@ -175,7 +200,7 @@ class _baseFrm(_wxFrame):
 
 # When the ESCAPE flag is set you can use the
 # ESCAPE key to quit the Application. this is
-# used for debbugging purposes.
+# used for a quick exit and debugging purposes.
  
 # Quick App
 class app(_wxApp):
@@ -218,7 +243,8 @@ class app(_wxApp):
         # the app when the ESCAPE flag
         # is set.
 
-        if debug.flag("escape"):
+        if _debug.flag("escape"):
+            _log.print('escape pressed: exiting...')
             if key == _wxWXK_ESCAPE:
                 _wxExit()
                 return
@@ -230,35 +256,29 @@ class app(_wxApp):
 
 #####################################################################
 #                                                           ### TESTS
-
+#
 if __name__ == "__main__":
 
-    if debug.flag('LOG'):
-        
-        if debug.flag('VERBOSE'):
-            log.display_file_header()
-            log.display_os_version()
-            log.display_python_version()
-            log.display_history(_HISTORY)
+    if _debug.flag('verbose'):
 
-    #############
-    # tests 0.0 #
-    #############
+        _log.boxprint('verbose')
+        _log.os_version()
+        _log.python_version()
+        _log.file_header()
+        _log.history(_HISTORY)
 
-    if "0.00" in TESTS:
+    if _debug.flag('tests'):
 
-        if debug.flag('LOG'):
-            log.boxprint(f"TEST")
-            log.print("running test version 0.00")
+        _log.boxprint('tests')
 
-        a = app()
-        a.Run()
+        if _test.flag('0.00'):
+            _log.print(" . running test for version 0.00")
 
-    if "1.00" in TESTS:
+            # instantiate and run the app
+            a = app()
+            a.Run()
 
-        if debug.flag('LOG'):
-            log.boxprint(f"TEST")
-            log.print("running test version 1.00")
+        if _test.flag('X.XX'):
+            _log.print(" . running test for version X.XX")
 
-        a = app()
-        a.Run()
+_log.boxprint('done')
