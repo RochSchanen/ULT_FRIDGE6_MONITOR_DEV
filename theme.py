@@ -1,5 +1,5 @@
-# file: p.py
-# content: user file
+# file: theme.py
+# content: image collection manager
 # created: 2025 April 22
 # modified: 2025 April 22
 # author: Roch Schanen
@@ -12,7 +12,10 @@ _DESCRIPTION = """
     
     --- motivation ---
 
-        This is a template file for the user to modify.
+        This is a library to help retrieve image collections from a
+        set of png files and to filter and select groups of images
+        from the collections that are to be used for background,
+        buttons, switches, etc.
 
 """
 
@@ -23,11 +26,8 @@ _DESCRIPTION = """
 _HISTORY = {
 
     "0.00": """
-        . Minimum template file.
-    """,
+        . add ImageCollection()
 
-    "0.01": """
-        . add background.
     """,
 }
 
@@ -52,11 +52,11 @@ _debug = debug_class(
 
 #####################################################################
 #                                                             ### LOG
-# The default log file is 'p.py.log'
+# The default log file is 'theme.py.log'
 # Use the debugging 'LOG' flag to activate messages logging.
 #
 from tools import log_class
-_log = log_class("./p.py.log" if _debug.flag('LOG') else "")
+_log = log_class("./theme.py.log" if _debug.flag('LOG') else "")
 
 #####################################################################
 #                                                            ### TEST
@@ -72,8 +72,28 @@ if _debug.flag('TESTS'):
 #
 # all constants, methods and classes are imported
 # individually to clarify the usage of packages.
+#
 
-from base import app
+# from standard packages:
+from sys        import path             as _path
+from os.path    import isfile           as _isfile
+
+# from wxpython: https://www.wxpython.org/
+# wx bitmap methods
+from wx import Bitmap                   as _wxBitmap
+from wx import BITMAP_TYPE_PNG          as _wxBITMAP_TYPE_PNG
+from wx import Rect                     as _wxRect
+
+#####################################################################
+#                                                         ### LIBRARY
+#
+
+
+
+
+
+
+
 
 #####################################################################
 #                                                           ### TESTS
@@ -94,11 +114,7 @@ if __name__ == "__main__":
         if _test.flag('0.00'):
             _log.print(" . running test for version 0.00")
 
-            a = app()
-            a.Run()
-
-        if _test.flag('0.01'):
-            _log.print(" . running test for version 0.01")
+            from base import app
 
             # derive a new class from app
             class myapp(app):

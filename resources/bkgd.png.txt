@@ -1,0 +1,7 @@
+
+0, 0, 1, 1, 512, 512, 1, 1, bkgd
+
+# libraries definition file.
+# One image per line
+# the image geometry and the images tags:
+# offset, grid, size, position, image tags
