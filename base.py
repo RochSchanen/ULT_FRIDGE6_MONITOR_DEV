@@ -244,8 +244,8 @@ class app(_wxApp):
         # is set.
 
         if _debug.flag("escape"):
-            _log.print('escape pressed: exiting...')
             if key == _wxWXK_ESCAPE:
+                _log.print('escape pressed: exiting...')
                 _wxExit()
                 return
 

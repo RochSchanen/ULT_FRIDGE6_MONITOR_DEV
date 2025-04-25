@@ -1,7 +1,7 @@
-# file: theme.py
-# content: image collection manager
+# file: p.py
+# content: user file
 # created: 2025 April 22
-# modified: 2025 April 24
+# modified: 2025 April 22
 # author: Roch Schanen
 # repository: https://GitHub.com/RochSchanen/ULT_FRIDGE6_MONITOR_DEV
 
@@ -12,10 +12,7 @@ _DESCRIPTION = """
     
     --- motivation ---
 
-        This is a library to help retrieve image from a set of .png
-        files and to filter and select groups of images from the
-        library of images collected. These are used for background,
-        buttons, switches, etc...
+        This is a template file for the user to modify.
 
 """
 
@@ -26,8 +23,11 @@ _DESCRIPTION = """
 _HISTORY = {
 
     "0.00": """
-        . add images() class
+        . Minimum template file.
+    """,
 
+    "0.01": """
+        . add background.
     """,
 }
 
@@ -52,11 +52,11 @@ _debug = debug_class(
 
 #####################################################################
 #                                                             ### LOG
-# The default log file is 'theme.py.log'
+# The default log file is 'p.py.log'
 # Use the debugging 'LOG' flag to activate messages logging.
 #
 from tools import log_class
-_log = log_class("./theme.py.log" if _debug.flag('LOG') else "")
+_log = log_class("./p.py.log" if _debug.flag('LOG') else "")
 
 #####################################################################
 #                                                            ### TEST
@@ -72,59 +72,8 @@ if _debug.flag('TESTS'):
 #
 # all constants, methods and classes are imported
 # individually to clarify the usage of packages.
-#
 
-# # from standard packages:
-# from sys        import path             as _path
-# from os.path    import isfile           as _isfile
-
-# # from wxpython: https://www.wxpython.org/
-# # wx bitmap methods
-# from wx import Bitmap                   as _wxBitmap
-# from wx import BITMAP_TYPE_PNG          as _wxBITMAP_TYPE_PNG
-# from wx import Rect                     as _wxRect
-
-#####################################################################
-#                                                         ### LIBRARY
-#
-
-class images():
-
-    def __init__(self):
-        # declare
-        self.imagelibrary = {}
-        # done
-        return
-
-    def load(self, name, *tags):
-
-        fp = f'./resources/{name}.png.txt'
-
-        # load the full definition file
-        fh = open(fp)
-        if not fh: return None
-        ft = fh.read()
-        fh.close()
-        
-        # build filter
-        filter = set(tags)
-
-        # go through file content
-        for s in ft.split('\n'):
-            if not s: continue # skip empty line
-            if s.strip()[0] == '#': continue # line comment
-            # parse geometry
-            geometry = tuple(int(p) for p in s.split(',')[:8])
-            # parse image tags
-            imagetags = set(p.strip() for p in s.split(',')[8:])
-            if filter.issubset(imagetags):
-                if _debug.flag('log'):
-                    _log.print(geometry, imagetags, filter)
-
-
-        return
-
-
+from base import app
 
 #####################################################################
 #                                                           ### TESTS
@@ -144,25 +93,28 @@ if __name__ == "__main__":
 
         if _test.flag('0.00'):
             _log.print(" . running test for version 0.00")
-            _log.print()            
 
-            from base import app
+            a = app()
+            a.Run()
+
+        if _test.flag('0.01'):
+            _log.print(" . running test for version 0.01")
 
             # derive a new class from app
             class myapp(app):
 
                 def Start(self):
-
-                    library = images()
-                    library.load('leds', 'red')
-
+                    # # collect images from "Panels.png"
+                    # img = imageCollect("panels", "large")
                     # # manually setup the background image of myapp
                     # self.Panel.BackgroundBitmap = img
-
                     # done
                     return
             
+            # instanciate myapp
             m = myapp()
+
+            # run myapp
             m.Run()
 
 _log.boxprint('done')
