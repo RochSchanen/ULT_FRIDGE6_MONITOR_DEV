@@ -68,26 +68,26 @@ _PATHS = [
 # the path selection, addition, substraction could
 # be implemented to choose one theme amongst multiple others
 
-# debug flag
-_DEBUG = False
+# # debug flag
+# _DEBUG = False
 
-def DEBUG(switch):
+# def DEBUG(switch):
 
-    if switch in ["ON", "On", "on", True, 1]:
-        _DEBUG = True
+#     if switch in ["ON", "On", "on", True, 1]:
+#         _DEBUG = True
 
-    if switch in ["OFF", "Off", "off", False, 0]:
-        _DEBUG = False  
+#     if switch in ["OFF", "Off", "off", False, 0]:
+#         _DEBUG = False  
 
-    if _DEBUG:
-        print(f"_DEBUG flag is on")
-        print(f"_APP_PATH: {_APP_PATH}")
-        print(f"_PATHS:")
-        for p in _PATHS:
-            print(f"{' ':3}{p}")
+#     if _DEBUG:
+#         print(f"_DEBUG flag is on")
+#         print(f"_APP_PATH: {_APP_PATH}")
+#         print(f"_PATHS:")
+#         for p in _PATHS:
+#             print(f"{' ':3}{p}")
     
-    #done 
-    return
+#     #done 
+#     return
 
 # get a valid path
 def _findpath(path):
@@ -123,64 +123,64 @@ def _findpath(path):
 
 ############################################ COLLECT
 
-# collect data list from the .txt file
-def _findpngs(name, *args):
+# # collect data list from the .txt file
+# def _findpngs(name, *args):
 
-    # load the definition file
-    f = open(_findpath(f'{name}.png.txt'))
-    if not f: return None
-    t = f.read()
-    f.close()
+#     # load the definition file
+#     f = open(_findpath(f'{name}.png.txt'))
+#     if not f: return None
+#     t = f.read()
+#     f.close()
 
-    # build library
-    library = []
-    for s in t.split('\n'):
-        if not s: continue               # skip empty line
-        if s.strip()[0] == '#': continue # skip commnent
-        l = s.split(',')                 # parse at coma
+#     # build library
+#     library = []
+#     for s in t.split('\n'):
+#         if not s: continue               # skip empty line
+#         if s.strip()[0] == '#': continue # skip commnent
+#         l = s.split(',')                 # parse at coma
 
-        # extract values
-        offset   = int(l[0]), int(l[1]) # offset values
-        grid     = int(l[2]), int(l[3]) # grid values
-        size     = int(l[4]), int(l[5]) # size values
-        position = int(l[6]), int(l[7]) # position values
+#         # extract values
+#         offset   = int(l[0]), int(l[1]) # offset values
+#         grid     = int(l[2]), int(l[3]) # grid values
+#         size     = int(l[4]), int(l[5]) # size values
+#         position = int(l[6]), int(l[7]) # position values
 
-        # build tags list
-        taglist = []
-        for t in l[8:]:
-            taglist.append(t.strip())
+#         # build tags list
+#         taglist = []
+#         for t in l[8:]:
+#             taglist.append(t.strip())
 
-        # group geometric parameters
-        geometry = offset, grid, size, position
+#         # group geometric parameters
+#         geometry = offset, grid, size, position
 
-        # record all parameters
-        library.append((geometry, taglist))
+#         # record all parameters
+#         library.append((geometry, taglist))
 
-    # collect pngs using the taglist as filter:
-    # images which tags list contains all of
-    # the arguments in args is added to the list  
-    collection = []
-    for i in library:
-        geometry, taglist = i
+#     # collect pngs using the taglist as filter:
+#     # images which tags list contains all of
+#     # the arguments in args is added to the list  
+#     collection = []
+#     for i in library:
+#         geometry, taglist = i
 
-        # filter
-        valid = True
-        for a in args:
-            if a not in taglist:
-                valid = False
+#         # filter
+#         valid = True
+#         for a in args:
+#             if a not in taglist:
+#                 valid = False
 
-        # add item to collection
-        if valid:
+#         # add item to collection
+#         if valid:
 
-            # remove filter tags from taglist
-            for a in args:
-                taglist.remove(a)
+#             # remove filter tags from taglist
+#             for a in args:
+#                 taglist.remove(a)
 
-            # collect
-            collection.append((geometry, taglist))
+#             # collect
+#             collection.append((geometry, taglist))
 
-    # done
-    return collection
+#     # done
+#     return collection
 
 # extract and collect bitmaps from a png file
 def imageCollect(name, *args):

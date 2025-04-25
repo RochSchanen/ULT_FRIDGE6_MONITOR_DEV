@@ -278,7 +278,9 @@ if __name__ == "__main__":
             a = app()
             a.Run()
 
+            _log.print(" . end test for version 0.00")
+
         if _test.flag('X.XX'):
             _log.print(" . running test for version X.XX")
-
-_log.boxprint('done')
+            # test code here
+            _log.print(" . end test for version X.XX")

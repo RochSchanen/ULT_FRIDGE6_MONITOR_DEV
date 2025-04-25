@@ -236,8 +236,8 @@ if __name__ == "__main__":
 
         if _test.flag('0.00'):
             _log.print(" . running test for version 0.00")
+            _log.print(" . end test for version 0.00")
 
         if _test.flag('X.XX'):
             _log.print(" . running test for version X.XX")
-
-_log.boxprint('done')
+            _log.print(" . end test for version X.XX")

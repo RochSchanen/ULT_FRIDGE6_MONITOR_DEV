@@ -1,15 +1,23 @@
 
-┌───────┐
-│ tests │
-└───────┘
+#########
+# tests #
+#########
 
  . running test for version 0.00
 
-{'red'}
-(0, 0, 8, 2, 20, 20, 1, 1) {'off', 'red'} {'red'}
-(0, 0, 8, 2, 20, 20, 2, 1) {'red', 'on'} {'red'}
 
-┌──────┐
-│ done │
-└──────┘
+
+
+leds ('blue', 'off') 0 0 8 2 20 20 5 1
+leds ('blue', 'on') 0 0 8 2 20 20 6 1
+leds ('red', 'off') 0 0 8 2 20 20 1 1
+leds ('red', 'on') 0 0 8 2 20 20 2 1
+leds ('green', 'off') 0 0 8 2 20 20 3 1
+leds ('green', 'on') 0 0 8 2 20 20 4 1
+leds ('yellow', 'off') 0 0 8 2 20 20 1 2
+leds ('yellow', 'on') 0 0 8 2 20 20 2 2
+leds ('white', 'off') 0 0 8 2 20 20 3 2
+leds ('white', 'on') 0 0 8 2 20 20 4 2
+
+ . end test for version 0.00
 

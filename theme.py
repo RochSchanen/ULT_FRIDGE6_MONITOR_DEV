@@ -21,7 +21,6 @@ _DESCRIPTION = """
 
 #####################################################################
 #                                                         ### HISTORY
-# The only available versions is "0.00"
 #
 _HISTORY = {
 
@@ -33,27 +32,16 @@ _HISTORY = {
 
 #####################################################################
 #                                                           ### DEBUG
-# uncomment line to set any flag:
-#
-# . NONE    : clears all flags (precedes the 'ALL' flag)
-# . ALL     : sets all flags (all flags are selected except 'NONE')
-# . LOG     : log messages to file
-# . VERBOSE : display extra informations
-# . TEST    : enable the selected tests
 #
 from tools import debug_class
 _debug = debug_class(
-    # 'ALL',
-    # 'NONE',
-    # 'VERBOSE',  # only performed when __main__
-    'TESTS',    # only performed when __main__
+    # 'VERBOSE'
+    'TESTS', 
     'LOG',
     )
 
 #####################################################################
 #                                                             ### LOG
-# The default log file is 'theme.py.log'
-# Use the debugging 'LOG' flag to activate messages logging.
 #
 from tools import log_class
 _log = log_class("./theme.py.log" if _debug.flag('LOG') else "")
@@ -62,10 +50,7 @@ _log = log_class("./theme.py.log" if _debug.flag('LOG') else "")
 #                                                            ### TEST
 #
 if _debug.flag('TESTS'):
-    _test = debug_class(
-        sorted(_HISTORY)[-1],   # run last version
-        # "X.XX",               # run version X.XX
-        )
+    _test = debug_class(sorted(_HISTORY)[-1])
 
 #####################################################################
 #                                                         ### IMPORTS
@@ -78,11 +63,12 @@ if _debug.flag('TESTS'):
 # from sys        import path             as _path
 # from os.path    import isfile           as _isfile
 
-# # from wxpython: https://www.wxpython.org/
-# # wx bitmap methods
-# from wx import Bitmap                   as _wxBitmap
-# from wx import BITMAP_TYPE_PNG          as _wxBITMAP_TYPE_PNG
-# from wx import Rect                     as _wxRect
+# from wxpython: https://www.wxpython.org/
+
+# wx bitmap methods
+from wx import Bitmap                   as _wxBitmap
+from wx import BITMAP_TYPE_PNG          as _wxBITMAP_TYPE_PNG
+from wx import Rect                     as _wxRect
 
 #####################################################################
 #                                                         ### LIBRARY
@@ -97,34 +83,54 @@ class images():
         return
 
     def load(self, name, *tags):
-
-        fp = f'./resources/{name}.png.txt'
-
-        # load the full definition file
-        fh = open(fp)
-        if not fh: return None
-        ft = fh.read()
-        fh.close()
-        
+        # load image
+        bmp = wxBitmap(fpb, wxBITMAP_TYPE_PNG)
+        W, H = bmp.GetSize()
+        # build file path
+        fpd = f'./resources/{name}.png.txt' # definition
+        fpb = f'./resources/{name}.png'     # bitmap
         # build filter
         filter = set(tags)
-
-        # go through file content
-        for s in ft.split('\n'):
-            if not s: continue # skip empty line
-            if s.strip()[0] == '#': continue # line comment
-            # parse geometry
-            geometry = tuple(int(p) for p in s.split(',')[:8])
-            # parse image tags
-            imagetags = set(p.strip() for p in s.split(',')[8:])
-            if filter.issubset(imagetags):
-                if _debug.flag('log'):
-                    _log.print(geometry, imagetags, filter)
-
-
+        # add collection
+        if not name in self.imagelibrary.keys():  
+            self.imagelibrary[name] = {}
+        # point to image collection
+        imco = self.imagelibrary[name]
+        # load the definition text file line by line
+        with open(fpd) as fh:
+            for l in fh:
+                s = l.strip()
+                # skip empty and comment lines
+                if s.strip() == '': continue
+                if s.strip()[0] == '#': continue
+                # parse geometry
+                geometry = tuple(int(p) for p in l.split(',')[:8])
+                # parse image tags
+                imagetags = tuple(p.strip() for p in l.split(',')[8:])
+                # filter and update image set
+                if filter.issubset(set(imagetags)):
+                    # check if image is already loaded
+                    # (no overloading: change this behaviour?)
+                    if not imagetags in imco.keys():
+                        # retrieve geometry
+                        xo, yo, nx, ny, w, h, i, j = geometry
+                        # compute grid size
+                        P, Q = W/nx, H/ny
+                        # compute clipping origin
+                        x = (i-1)*P + (P-w)/2 + xo
+                        y = (j-1)*Q + (Q-h)/2 + yo
+                        # set clipping geometry
+                        Clip = wxRect(int(x), int(y), w, h)
+                        # clip and record image in the collection
+                        imco[imagetags] = bm.GetSubBitmap(Clip)
+        # done
         return
 
-
+    def display(self):
+        for n in self.imagelibrary.keys():
+            for k in self.imagelibrary[n].keys():
+                x, y, nx, ny, w, h, i, j = self.imagelibrary[n][k]
+                _log.print(n, k, x, y, nx, ny, w, h, i, j)
 
 #####################################################################
 #                                                           ### TESTS
@@ -143,6 +149,7 @@ if __name__ == "__main__":
         _log.boxprint('tests')
 
         if _test.flag('0.00'):
+
             _log.print(" . running test for version 0.00")
             _log.print()            
 
@@ -154,7 +161,15 @@ if __name__ == "__main__":
                 def Start(self):
 
                     library = images()
+                    library.load('leds', 'violet')
+                    _log.print()
+                    library.load('leds', 'blue')
+                    _log.print()
                     library.load('leds', 'red')
+                    _log.print()
+                    library.load('leds')
+
+                    library.display()
 
                     # # manually setup the background image of myapp
                     # self.Panel.BackgroundBitmap = img
@@ -165,4 +180,6 @@ if __name__ == "__main__":
             m = myapp()
             m.Run()
 
-_log.boxprint('done')
+            _log.print()            
+            _log.print(" . end test for version 0.00")
+            _log.print()            
