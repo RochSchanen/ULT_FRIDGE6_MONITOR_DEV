@@ -336,3 +336,52 @@ if __name__ == "__main__":
             m.Run()
 
             _log.print(" . end test for version 0.01")
+
+        if _test.flag('0.02'):
+            
+            _log.print(" . running test for version 0.02")
+
+            from base   import app
+            from theme  import images
+
+            # derive a new class from app
+            class myapp(app):
+
+                def led1_handler(self, event):
+                    _log.print(f'led1 pressed...')
+                    return
+
+                def Start(self):
+
+                    # instanciate image library
+                    library = images()
+                    
+                    # load background bitmap (all of the images)
+                    library.load('bkgd')
+
+                    # use background bitmap
+                    self.Panel.BackgroundBitmap = library.select('bkgd')
+                    
+                    # load led bitmaps (blue and red only)
+                    library.load('leds', ['red', 'blue'])
+
+                    led1 = Push(
+                        self.Panel,
+                        library.select(
+                            'leds', 
+                            'red', 
+                            ['on', 'off'],
+                            ),
+                        )
+
+                    led1.BindEvent(self.led1_handler)
+
+                    led1.SetPosition((100, 100))
+                    
+                    # done
+                    return
+            
+            m = myapp()
+            m.Run()
+
+            _log.print(" . end test for version 0.02")
