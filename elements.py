@@ -7,6 +7,7 @@
 
 #####################################################################
 #                                                     ### DESCRIPTION
+
 _DESCRIPTION = """   
 """
 
@@ -27,6 +28,7 @@ _HISTORY = {
 
 #####################################################################
 #                                                           ### DEBUG
+
 from tools import debug_class
 _debug = debug_class(
     # 'ALL',
@@ -38,6 +40,7 @@ _debug = debug_class(
 
 #####################################################################
 #                                                             ### LOG
+
 from tools import log_class
 _log = log_class(
     "./logs/elements.py.log" if _debug.flag('LOG') else ""
@@ -45,8 +48,10 @@ _log = log_class(
 
 #####################################################################
 #                                                            ### TEST
+
 if _debug.flag('TESTS'):
     _test = debug_class(
+        # '0.00',
         sorted(_HISTORY)[-1],
         )
 
@@ -76,7 +81,7 @@ from wx import EVT_LEFT_UP              as _wxEVT_LEFT_UP
 from wx import EVT_LEAVE_WINDOW         as _wxEVT_LEAVE_WINDOW
 
 #####################################################################
-#                                                         ### Display
+
 class Display(_wxControl):
     
     # superseed __init__()
@@ -137,8 +142,64 @@ class Display(_wxControl):
     def GetValue(self):
         return self.status
 
+if __name__ == "__main__":
+    if _debug.flag('tests'):
+        if _test.flag('0.00'):
+            
+            if _debug.flag('verbose'):
+                _log.boxprint('verbose')
+                _log.os_version()
+                _log.python_version()
+                _log.file_header()
+                _log.history(_HISTORY)
+
+            _log.boxprint('tests')
+            _log.print(" . running test for version 0.00")
+
+            from base   import app
+            from theme  import images
+
+            # derive a new class from app
+            class myapp(app):
+
+                def Start(self):
+
+                    # instanciate image library
+                    library = images()
+                    
+                    # load background bitmap (all of the images)
+                    library.load('bkgd')
+
+                    # use background bitmap
+                    self.Panel.BackgroundBitmap = library.select('bkgd')
+                    
+                    # load led bitmaps (blue and red only)
+                    library.load('leds', ['red', 'blue'])
+
+                    led1 = Display(
+                        self.Panel,
+                        library.select('leds', 'red', ['on', 'off']),
+                        ['on', 'off'])
+                    led1.SetPosition((100, 100))
+                    led1.SetValue('on')
+                    
+                    led2 = Display(
+                        self.Panel,
+                        library.select('leds', 'blue', ['off', 'on']),
+                        ['off', 'on'])
+                    led2.SetPosition((130, 100))
+                    led2.SetValue(1)
+
+                    # done
+                    return
+            
+            m = myapp()
+            m.Run()
+
+            _log.print(" . end test for version 0.00")
+
 #####################################################################
-#                                                            ### _btn
+
 class _btn(Display):
 
     def __init__(self, parent, images, names = None):
@@ -191,9 +252,6 @@ class _btn(Display):
             _wxPostEvent(self.GetParent(), event)
         return
 
-#####################################################################
-#                                                            ### Push
-# (send event on pressing)
 class Push(_btn):
 
     def _start(self):
@@ -226,70 +284,18 @@ class Push(_btn):
             self.Refresh()
         return
 
-#####################################################################
-#                                                           ### TESTS
-#
 if __name__ == "__main__":
-
-    if _debug.flag('verbose'):
-
-        _log.boxprint('verbose')
-        _log.os_version()
-        _log.python_version()
-        _log.file_header()
-        _log.history(_HISTORY)
-
     if _debug.flag('tests'):
-        _log.boxprint('tests')
-
-        if _test.flag('0.00'):
-            
-            _log.print(" . running test for version 0.00")
-
-            from base   import app
-            from theme  import images
-
-            # derive a new class from app
-            class myapp(app):
-
-                def Start(self):
-
-                    # instanciate image library
-                    library = images()
-                    
-                    # load background bitmap (all of the images)
-                    library.load('bkgd')
-
-                    # use background bitmap
-                    self.Panel.BackgroundBitmap = library.select('bkgd')
-                    
-                    # load led bitmaps (blue and red only)
-                    library.load('leds', ['red', 'blue'])
-
-                    led1 = Display(
-                        self.Panel,
-                        library.select('leds', 'red', ['on', 'off']),
-                        ['on', 'off'])
-                    led1.SetPosition((100, 100))
-                    led1.SetValue('on')
-                    
-                    led2 = Display(
-                        self.Panel,
-                        library.select('leds', 'blue', ['off', 'on']),
-                        ['off', 'on'])
-                    led2.SetPosition((130, 100))
-                    led2.SetValue(1)
-
-                    # done
-                    return
-            
-            m = myapp()
-            m.Run()
-
-            _log.print(" . end test for version 0.00")
-
         if _test.flag('0.01'):
+
+            if _debug.flag('verbose'):
+                _log.boxprint('verbose')
+                _log.os_version()
+                _log.python_version()
+                _log.file_header()
+                _log.history(_HISTORY)
             
+            _log.boxprint('tests')
             _log.print(" . running test for version 0.01")
 
             from base   import app
@@ -298,8 +304,8 @@ if __name__ == "__main__":
             # derive a new class from app
             class myapp(app):
 
-                def led1_handler(self, event):
-                    _log.print(f'led1 pressed...')
+                def push_handler(self, event):
+                    _log.print(f'push pressed...')
                     return
 
                 def Start(self):
@@ -314,18 +320,17 @@ if __name__ == "__main__":
                     self.Panel.BackgroundBitmap = library.select('bkgd')
                     
                     # load led bitmaps (blue and red only)
-                    library.load('leds', ['red', 'blue'])
+                    library.load('push', 'blank')
 
                     led1 = Push(
                         self.Panel,
                         library.select(
-                            'leds', 
-                            'red', 
-                            ['on', 'off'],
+                            'push',
+                            ['released', 'pressed'],
                             ),
                         )
 
-                    led1.BindEvent(self.led1_handler)
+                    led1.BindEvent(self.push_handler)
 
                     led1.SetPosition((100, 100))
                     
@@ -336,52 +341,3 @@ if __name__ == "__main__":
             m.Run()
 
             _log.print(" . end test for version 0.01")
-
-        if _test.flag('0.02'):
-            
-            _log.print(" . running test for version 0.02")
-
-            from base   import app
-            from theme  import images
-
-            # derive a new class from app
-            class myapp(app):
-
-                def led1_handler(self, event):
-                    _log.print(f'led1 pressed...')
-                    return
-
-                def Start(self):
-
-                    # instanciate image library
-                    library = images()
-                    
-                    # load background bitmap (all of the images)
-                    library.load('bkgd')
-
-                    # use background bitmap
-                    self.Panel.BackgroundBitmap = library.select('bkgd')
-                    
-                    # load led bitmaps (blue and red only)
-                    library.load('leds', ['red', 'blue'])
-
-                    led1 = Push(
-                        self.Panel,
-                        library.select(
-                            'leds', 
-                            'red', 
-                            ['on', 'off'],
-                            ),
-                        )
-
-                    led1.BindEvent(self.led1_handler)
-
-                    led1.SetPosition((100, 100))
-                    
-                    # done
-                    return
-            
-            m = myapp()
-            m.Run()
-
-            _log.print(" . end test for version 0.02")
