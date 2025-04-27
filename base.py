@@ -84,7 +84,7 @@ _debug = debug_class(
 # Use the debugging 'LOG' flag to activate messages logging.
 #
 from tools import log_class
-_log = log_class("./base.py.log" if _debug.flag('LOG') else "")
+_log = log_class("./logs/base.py.log" if _debug.flag('LOG') else "")
 
 #####################################################################
 #                                                            ### TEST
@@ -278,7 +278,9 @@ if __name__ == "__main__":
             a = app()
             a.Run()
 
+            _log.print(" . end test for version 0.00")
+
         if _test.flag('X.XX'):
             _log.print(" . running test for version X.XX")
 
-_log.boxprint('done')
+            _log.print(" . end test for version X.XX")

@@ -19,7 +19,6 @@ _DESCRIPTION = """
 
 #####################################################################
 #                                                         ### HISTORY
-# The only available versions is "0.00"
 #
 _HISTORY = {
 
@@ -68,6 +67,21 @@ _HISTORY = {
             
             . use 'log_class.history()' to log the file history.
             This text is part of the file history.
+    """,
+
+    "0.01": """
+        Add 'path_class':
+    
+            . 'path_class.__init__() initialises the path_class with
+            two default paths: the absolute path to the script and to
+            the subfolder /resources.
+
+            . 'path_class.find(path)' checks first if the relative path
+            given as a parameter to a given file exists. If not, it will
+            search for that file through the other paths registered.
+
+            . use 'path_class.paths.append("new_path_string")' to register
+            more paths.
     """,
 }
 
@@ -184,6 +198,27 @@ class log_class():
         # done
         return
 
+class path_class():
+
+    def __init__(self):
+        from sys import path as _sysPath
+        # default paths
+        self.paths = [
+            f'{_sysPath[0]}/resources',
+            f'{_sysPath[0]}',
+            ]
+
+    def find(self, path):
+        from os.path import isfile  as _ospathIsfile
+        if _ospathIsfile(path): return path
+        filepath = None
+        for p in self.paths:
+            fp = f"{p}/{path}"
+            if _ospathIsfile(fp):
+                filepath = fp
+        # done
+        return filepath
+
 #####################################################################
 #                                                           ### DEBUG
 # uncomment line to set any flag:
@@ -207,7 +242,7 @@ _debug = debug_class(
 # The default log file is 'tools.py.log'
 # Use the debugging 'LOG' flag to activate messages logging.
 #
-_log = log_class("./tools.py.log" if _debug.flag('LOG') else "")
+_log = log_class("./logs/tools.py.log" if _debug.flag('LOG') else "")
 
 #####################################################################
 #                                                            ### TEST
@@ -236,8 +271,14 @@ if __name__ == "__main__":
 
         if _test.flag('0.00'):
             _log.print(" . running test for version 0.00")
+            _log.print(" . end test for version 0.00")
 
-        if _test.flag('X.XX'):
-            _log.print(" . running test for version X.XX")
+        if _test.flag('0.01'):
+            _log.print(" . running test for version 0.01")
 
-_log.boxprint('done')
+            path = path_class()
+
+            _log.print(f' find path of file "bkgd.png":')
+            _log.print(path.find('bkgd.png'))
+
+            _log.print(" . end test for version 0.00")
