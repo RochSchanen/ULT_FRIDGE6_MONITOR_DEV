@@ -5,9 +5,8 @@
 # author: Roch Schanen
 # repository: https://github.com/RochSchanen/ULT_FRIDGE6_MONITOR_DEV
 
-#####################################################################
-#                                                     ### DESCRIPTION
-#
+_HISTORY = {}
+
 _DESCRIPTION = """   
  
     --- motivation ---
@@ -18,76 +17,8 @@ _DESCRIPTION = """
 """
 
 #####################################################################
-#                                                         ### HISTORY
-#
-_HISTORY = {
-
-    "0.00": """
-        Add 'debug_class' and 'log_class':
-    
-            . 'debug_class.__init__(*flags)' sets the flags during
-            instantiation (by passing the names of the flags as
-            strings). There is two reserved flags: 1) The flag 'NONE'
-            which clears all flags and has precedence over all the
-            other flags. 2) The flag 'ALL' which sets all flags (all
-            flags are selected except the flag 'NONE').
-
-            . 'debug_class.flag(*flags)' tests if any of the flags
-            parameters (passed as strings) is set.
-
-            . 'log_class.__init__(filepath = "")' defines the log
-            file for logging messages during instantiation. If the
-            'filepath' parameter is left empty (default value), no
-            file is created, and the 'log_class.print()' method
-            writes only to the standard output. If 'filepath' is
-            defined, the 'log_class.print()' method write both to
-            the standard output and to the log file.
-
-            . use 'log_class.print(*args, **kwargs)' exactly as you
-            would use the standard 'print(*args, **kwargs)' function.
-
-            . use 'log_class.boxprint(s)' to print a string 's' that
-            is surrounded by a decorating box to emphasize the text.
-            The style of the box depends on the operating system.
-            The reason is that some python versions cannot display
-            some Unicode characters.
-
-            . Some additional methods are useful to display some
-            complementary information when running the python code:
-
-            . use 'log_class.file_header()' to log the header of the
-            main script. The header correspond to all the line at the
-            beginning of the file that start with the hash sign.
-
-            . use 'log_class.os_version()' to log the current version
-            of operating system.
-            
-            . use 'log_class.python_version()' to log the current
-            python version used to run the code.
-            
-            . use 'log_class.history()' to log the file history.
-            This text is part of the file history.
-    """,
-
-    "0.01": """
-        Add 'path_class':
-    
-            . 'path_class.__init__() initialises the path_class with
-            two default paths: the absolute path to the script and to
-            the subfolder /resources.
-
-            . 'path_class.find(path)' checks first if the relative path
-            given as a parameter to a given file exists. If not, it will
-            search for that file through the other paths registered.
-
-            . use 'path_class.paths.append("new_path_string")' to register
-            more paths.
-    """,
-}
-
-#####################################################################
 #                                                         ### LIBRARY
-#
+
 class debug_class():
 
     def __init__(self, *flags):
@@ -198,6 +129,53 @@ class log_class():
         # done
         return
 
+_HISTORY["0.00"] = """
+    Add 'debug_class' and 'log_class':
+    
+        . 'debug_class.__init__(*flags)' sets the flags during
+        instantiation (by passing the names of the flags as
+        strings). There is two reserved flags: 1) The flag 'NONE'
+        which clears all flags and has precedence over all the
+        other flags. 2) The flag 'ALL' which sets all flags (all
+        flags are selected except the flag 'NONE').
+
+        . 'debug_class.flag(*flags)' tests if any of the flags
+        parameters (passed as strings) is set.
+
+        . 'log_class.__init__(filepath = "")' defines the log
+        file for logging messages during instantiation. If the
+        'filepath' parameter is left empty (default value), no
+        file is created, and the 'log_class.print()' method
+        writes only to the standard output. If 'filepath' is
+        defined, the 'log_class.print()' method write both to
+        the standard output and to the log file.
+
+        . use 'log_class.print(*args, **kwargs)' exactly as you
+        would use the standard 'print(*args, **kwargs)' function.
+
+        . use 'log_class.boxprint(s)' to print a string 's' that
+        is surrounded by a decorating box to emphasize the text.
+        The style of the box depends on the operating system.
+        The reason is that some python versions cannot display
+        some Unicode characters.
+
+        . Some additional methods are useful to display some
+        complementary information when running the python code:
+
+        . use 'log_class.file_header()' to log the header of the
+        main script. The header correspond to all the line at the
+        beginning of the file that start with the hash sign.
+
+        . use 'log_class.os_version()' to log the current version
+        of operating system.
+        
+        . use 'log_class.python_version()' to log the current
+        python version used to run the code.
+        
+        . use 'log_class.history()' to log the file history.
+        This text is part of the file history.
+    """
+
 class path_class():
 
     def __init__(self):
@@ -218,6 +196,21 @@ class path_class():
                 filepath = fp
         # done
         return filepath
+
+_HISTORY["0.01"] = """
+    Add 'path_class':
+    
+        . 'path_class.__init__() initialises the path_class with
+        two default paths: the absolute path to the script and to
+        the subfolder /resources.
+
+        . 'path_class.find(path)' checks first if the relative path
+        given as a parameter to a given file exists. If not, it will
+        search for that file through the other paths registered.
+
+        . use 'path_class.paths.append("new_path_string")' to register
+        more paths.
+    """
 
 #####################################################################
 #                                                           ### DEBUG
@@ -242,20 +235,22 @@ _debug = debug_class(
 # The default log file is 'tools.py.log'
 # Use the debugging 'LOG' flag to activate messages logging.
 #
-_log = log_class("./logs/tools.py.log" if _debug.flag('LOG') else "")
+_log = log_class(
+    "./logs/tools.py.log" if _debug.flag('LOG') else ""
+    )
 
 #####################################################################
 #                                                            ### TEST
 #
 if _debug.flag('TESTS'):
     _test = debug_class(
-        sorted(_HISTORY)[-1],   # run last version
-        # "X.XX",               # run version X.XX
+        # "X.XX",           # run version X.XX
+        # "0.00",
+        "0.01",
         )
 
 #####################################################################
 #                                                           ### TESTS
-#
 if __name__ == "__main__":
 
     if _debug.flag('verbose'):
@@ -269,10 +264,14 @@ if __name__ == "__main__":
     if _debug.flag('tests'):
         _log.boxprint('tests')
 
+        #####################################################
+        #                                                0.00
         if _test.flag('0.00'):
             _log.print(" . running test for version 0.00")
             _log.print(" . end test for version 0.00")
 
+        #####################################################
+        #                                                0.01
         if _test.flag('0.01'):
             _log.print(" . running test for version 0.01")
 

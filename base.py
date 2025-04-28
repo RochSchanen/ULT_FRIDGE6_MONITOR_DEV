@@ -5,9 +5,8 @@
 # author: Roch Schanen
 # repository: https://GitHub.com/RochSchanen/ULT_FRIDGE6_MONITOR_DEV
 
-#####################################################################
-#                                                     ### DESCRIPTION
-#
+_HISTORY = {}
+
 _DESCRIPTION = """   
     
     --- motivation ---
@@ -34,40 +33,6 @@ _DESCRIPTION = """
 
 """
 
-#####################################################################
-#                                                         ### HISTORY
-# The only available versions is "0.00"
-#
-_HISTORY = {
-
-    "0.00": """
-        Add 'app' class:
-            
-            . 'app.__init__()' doesn't require any parameters.
-
-            . 'app.Start()', which must be overloaded by the user,
-            is used to initialise the user part of the app.
-            'app.Start()' is called automatically after the 'main
-            Window', the 'main Frame', and the 'main Panel' have
-            been instantiated.
-            
-            . 'app.Run()' is used to run the app and must be called
-            by the user after the app instantiation.
-
-    """,
-}
-
-#####################################################################
-#                                                           ### DEBUG
-# uncomment line to set any flag:
-#
-# . NONE    : clears all flags (precedes the 'ALL' flag)
-# . ALL     : sets all flags (all flags are selected except 'NONE')
-# . LOG     : log messages to file
-# . VERBOSE : display extra informations
-# . TEST    : enable the selected tests
-# . ESCAPE  : enable the escape key for exiting the app
-#
 from tools import debug_class
 _debug = debug_class(
     # 'ALL',
@@ -75,31 +40,21 @@ _debug = debug_class(
     'VERBOSE',  # only performed when __main__
     'TESTS',    # only performed when __main__
     'LOG',
-    'ESCAPE',
+    'ESCAPE',   # enable the escape key for exiting the app
     )
 
-#####################################################################
-#                                                             ### LOG
-# The default log file is 'base.py.log'
-# Use the debugging 'LOG' flag to activate messages logging.
-#
 from tools import log_class
-_log = log_class("./logs/base.py.log" if _debug.flag('LOG') else "")
+_log = log_class(
+    "./logs/base.py.log" if _debug.flag('LOG') else ""
+    )
 
-#####################################################################
-#                                                            ### TEST
-#
 if _debug.flag('TESTS'):
     _test = debug_class(
-        sorted(_HISTORY)[-1],   # run last version
-        # "X.XX",               # run version X.XX
+        "0.00",
         )
 
 #####################################################################
 #                                                         ### IMPORTS
-#
-# all constants, methods and classes are imported
-# individually to clarify the usage of packages.
 
 # from wxpython: https://www.wxpython.org/
 
@@ -254,9 +209,25 @@ class app(_wxApp):
         # done
         return
 
+_HISTORY["0.00"] = """
+    Add 'app' class:
+            
+        . 'app.__init__()' doesn't require any parameters.
+
+        . 'app.Start()', which must be overloaded by the user,
+        is used to initialise the user part of the app.
+        'app.Start()' is called automatically after the 'main
+        Window', the 'main Frame', and the 'main Panel' have
+        been instantiated.
+        
+        . 'app.Run()' is used to run the app and must be called
+        by the user after the app instantiation.
+
+    """
+
 #####################################################################
 #                                                           ### TESTS
-#
+
 if __name__ == "__main__":
 
     if _debug.flag('verbose'):
@@ -279,8 +250,3 @@ if __name__ == "__main__":
             a.Run()
 
             _log.print(" . end test for version 0.00")
-
-        if _test.flag('X.XX'):
-            _log.print(" . running test for version X.XX")
-
-            _log.print(" . end test for version X.XX")
