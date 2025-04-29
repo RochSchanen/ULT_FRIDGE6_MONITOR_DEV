@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"op",
+				"option2"
+			],
+			[
 				"ima",
 				"imagetags"
 			],
@@ -168,10 +172,6 @@
 				"PARSELINE"
 			],
 			[
-				"op",
-				"optD"
-			],
-			[
 				"en",
 				"engine__001"
 			],
@@ -232,11 +232,13 @@
 	"buffers":
 	[
 		{
-			"file": "/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/tools.py",
+			"contents": "",
+			"file": "/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/docs/boxchar.txt",
+			"file_size": -1,
+			"file_write_time": -1,
 			"settings":
 			{
-				"buffer_size": 8801,
-				"encoding": "UTF-8",
+				"buffer_size": 0,
 				"line_ending": "Windows"
 			}
 		}
@@ -377,15 +379,20 @@
 	},
 	"expanded_folders":
 	[
-		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV"
+		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV",
+		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/.local",
+		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/.logs",
+		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/__pycache__",
+		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/docs"
 	],
 	"file_history":
 	[
+		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/obsolete/codebit_CONFIG.py",
+		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/tools.py",
 		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/p.py",
 		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/display.py",
 		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/theme.py",
 		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/base.py",
-		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/tools.py",
 		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/obsolete/codebit_THEME.py",
 		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/theme.py.log",
 		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/base.py.log",
@@ -507,8 +514,7 @@
 		"/home/roch/Downloads/Sort/manifest",
 		"/home/roch/Documents/projects/python/boundmaps.py",
 		"/home/roch/Documents/projects/python/vmapcomp.py",
-		"/home/roch/Documents/projects/python/libs/backends.py",
-		"/home/roch/Documents/projects/python/libs/localpaths.py"
+		"/home/roch/Documents/projects/python/libs/backends.py"
 	],
 	"find":
 	{
@@ -618,12 +624,12 @@
 			[
 				{
 					"buffer": 0,
-					"file": "/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/tools.py",
+					"file": "/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/docs/boxchar.txt",
 					"selected": true,
 					"semi_transient": true,
 					"settings":
 					{
-						"buffer_size": 8801,
+						"buffer_size": 0,
 						"regions":
 						{
 						},
@@ -636,9 +642,7 @@
 						],
 						"settings":
 						{
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
+							"syntax": "Packages/Text/Plain text.tmLanguage"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
