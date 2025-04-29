@@ -231,17 +231,6 @@
 	},
 	"buffers":
 	[
-		{
-			"contents": "",
-			"file": "/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/docs/boxchar.txt",
-			"file_size": -1,
-			"file_write_time": -1,
-			"settings":
-			{
-				"buffer_size": 0,
-				"line_ending": "Windows"
-			}
-		}
 	],
 	"build_system": "",
 	"build_system_choices":
@@ -382,8 +371,9 @@
 		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV",
 		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/.local",
 		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/.logs",
-		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/__pycache__",
-		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/docs"
+		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/obsolete",
+		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/tests",
+		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/ULT_FRIDGE6_MONITOR"
 	],
 	"file_history":
 	[
@@ -622,36 +612,6 @@
 		{
 			"sheets":
 			[
-				{
-					"buffer": 0,
-					"file": "/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/docs/boxchar.txt",
-					"selected": true,
-					"semi_transient": true,
-					"settings":
-					{
-						"buffer_size": 0,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Text/Plain text.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"stack_multiselect": false,
-					"type": "text"
-				}
 			]
 		},
 		{
@@ -688,7 +648,7 @@
 		"cols":
 		[
 			0.0,
-			0.550785973398,
+			0.5,
 			1.0
 		],
 		"rows":
