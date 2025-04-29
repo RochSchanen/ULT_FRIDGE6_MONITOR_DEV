@@ -5,61 +5,30 @@
 # author: Roch Schanen
 # repository: https://GitHub.com/RochSchanen/ULT_FRIDGE6_MONITOR_DEV
 
-#####################################################################
-#                                                     ### DESCRIPTION
+_LOGFILE = \
+    f"./logs/elements.py.log"
 
-_DESCRIPTION = """   
-"""
-
-#####################################################################
-#                                                         ### HISTORY
-_HISTORY = {
-
-    "0.00": """
-        add display():
-    """,
-
-    "0.01": """
-        add _btn(), Push():
-
-    """,
-
-    }
-
-#####################################################################
-#                                                           ### DEBUG
-
-from tools import debug_class
-_debug = debug_class(
-    # 'ALL',
-    # 'NONE',
-    # 'VERBOSE',
+_FLAGS = [
     'TESTS',
     'LOG',
-    )
+    ]
 
-#####################################################################
-#                                                             ### LOG
+_TESTS = [
+    '0.00',
+    '0.01',
+    ]
 
+from tools import debug_class
+_debug = debug_class(*_FLAGS)
 from tools import log_class
-_log = log_class(
-    "./logs/elements.py.log" if _debug.flag('LOG') else ""
-    )
+_log = log_class(_LOGFILE if _debug.flag('LOG') else "")
+if _debug.flag('TESTS'): _test = debug_class(*_TESTS)
 
 #####################################################################
-#                                                            ### TEST
-
-if _debug.flag('TESTS'):
-    _test = debug_class(
-        # '0.00',
-        sorted(_HISTORY)[-1],
-        )
-
-#####################################################################
-#                                                         ### IMPORTS
+#                            IMPORTS
 # from wxpython: https://www.wxpython.org/
 
-# Display
+# display
 from wx import Control                  as _wxControl
 from wx import ID_ANY                   as _wxID_ANY
 from wx import DefaultPosition          as _wxDefaultPosition
@@ -81,8 +50,9 @@ from wx import EVT_LEFT_UP              as _wxEVT_LEFT_UP
 from wx import EVT_LEAVE_WINDOW         as _wxEVT_LEAVE_WINDOW
 
 #####################################################################
+#                             display
 
-class Display(_wxControl):
+class display(_wxControl):
     
     # superseed __init__()
     def __init__(self, parent, bitmaps, names = None):
@@ -142,69 +112,14 @@ class Display(_wxControl):
     def GetValue(self):
         return self.status
 
-if __name__ == "__main__":
-    if _debug.flag('tests'):
-        if _test.flag('0.00'):
-            
-            if _debug.flag('verbose'):
-                _log.boxprint('verbose')
-                _log.os_version()
-                _log.python_version()
-                _log.file_header()
-                _log.history(_HISTORY)
-
-            _log.boxprint('tests')
-            _log.print(" . running test for version 0.00")
-
-            from base   import app
-            from theme  import images
-
-            # derive a new class from app
-            class myapp(app):
-
-                def Start(self):
-
-                    # instanciate image library
-                    library = images()
-                    
-                    # load background bitmap (all of the images)
-                    library.load('bkgd')
-
-                    # use background bitmap
-                    self.Panel.BackgroundBitmap = library.select('bkgd')
-                    
-                    # load led bitmaps (blue and red only)
-                    library.load('leds', ['red', 'blue'])
-
-                    led1 = Display(
-                        self.Panel,
-                        library.select('leds', 'red', ['on', 'off']),
-                        ['on', 'off'])
-                    led1.SetPosition((100, 100))
-                    led1.SetValue('on')
-                    
-                    led2 = Display(
-                        self.Panel,
-                        library.select('leds', 'blue', ['off', 'on']),
-                        ['off', 'on'])
-                    led2.SetPosition((130, 100))
-                    led2.SetValue(1)
-
-                    # done
-                    return
-            
-            m = myapp()
-            m.Run()
-
-            _log.print(" . end test for version 0.00")
-
 #####################################################################
+#                              _btn
 
-class _btn(Display):
+class _btn(display):
 
     def __init__(self, parent, images, names = None):
 
-        Display.__init__(self, parent, images, names)
+        display.__init__(self, parent, images, names)
 
         # locals
         self.radio = None
@@ -252,7 +167,10 @@ class _btn(Display):
             _wxPostEvent(self.GetParent(), event)
         return
 
-class Push(_btn):
+#####################################################################
+#                               push
+
+class push(_btn):
 
     def _start(self):
         self.lock = False
@@ -284,9 +202,11 @@ class Push(_btn):
             self.Refresh()
         return
 
+#####################################################################
+
 if __name__ == "__main__":
     if _debug.flag('tests'):
-        if _test.flag('0.01'):
+        if _test.flag('0.00'):
 
             if _debug.flag('verbose'):
                 _log.boxprint('verbose')
@@ -296,7 +216,7 @@ if __name__ == "__main__":
                 _log.history(_HISTORY)
             
             _log.boxprint('tests')
-            _log.print(" . running test for version 0.01")
+            _log.print(" . running test for version 0.00")
 
             from base   import app
             from theme  import images
@@ -309,35 +229,44 @@ if __name__ == "__main__":
                     return
 
                 def Start(self):
-
                     # instanciate image library
                     library = images()
-                    
                     # load background bitmap (all of the images)
                     library.load('bkgd')
-
                     # use background bitmap
                     self.Panel.BackgroundBitmap = library.select('bkgd')
-                    
                     # load led bitmaps (blue and red only)
+                    library.load('leds', ['red', 'blue'])
+                    # led 1
+                    led1 = display(
+                        self.Panel,
+                        library.select('leds', 'red', ['on', 'off']),
+                        ['on', 'off'])
+                    led1.SetPosition((100, 100))
+                    led1.SetValue('on')
+                    # led 2
+                    led2 = display(
+                        self.Panel,
+                        library.select('leds', 'blue', ['off', 'on']),
+                        ['off', 'on'])
+                    led2.SetPosition((130, 100))
+                    led2.SetValue(1)
+                    # load push button
                     library.load('push', 'blank')
-
-                    led1 = Push(
+                    # push 1
+                    push1 = push(
                         self.Panel,
                         library.select(
                             'push',
                             ['released', 'pressed'],
                             ),
                         )
-
-                    led1.BindEvent(self.push_handler)
-
-                    led1.SetPosition((100, 100))
-                    
+                    push1.SetPosition((160, 100))
+                    push1.BindEvent(self.push_handler)                    
                     # done
                     return
             
             m = myapp()
             m.Run()
 
-            _log.print(" . end test for version 0.01")
+            _log.print(" . end test for version 0.00")
