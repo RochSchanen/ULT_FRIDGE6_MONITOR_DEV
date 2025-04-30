@@ -1,60 +1,30 @@
 # file: base.py
 # content: App class definition
 # created: 2020 March 21
-# modified: 2025 April 22
+# modified: 2025 April 30
 # author: Roch Schanen
 # repository: https://GitHub.com/RochSchanen/ULT_FRIDGE6_MONITOR_DEV
 
-_HISTORY = {}
+_LOG_FILE = f".logs/base.py.log"
 
-_DESCRIPTION = """   
-    
-    --- motivation ---
-
-    This is a mini-library to simplify GUI programming.
-    The base module is used to create the main window
-    and start the main application.
-
-    --- technically ---
-
-    On instantiating an "App" object, a frame is
-    automatically created and a panel container is
-    created too that fills the frame window.
-
-    A "BackgroundBitmap" is instantiated and is used to
-    paint the panel background. This "BackgroundBitmap"
-    is used by default as the canvas for the "layout"
-    class to draw all the app's decorations.
-
-    --- requirements ---
-
-    The module "base" requires the module "tools" to be
-    present and the package "wxpython" to be installed.
-
-"""
-
-from tools import debug_class
-_debug = debug_class(
-    # 'ALL',
+_DEBUG_FLAGS = [
     # 'NONE',
-    'VERBOSE',  # only performed when __main__
-    'TESTS',    # only performed when __main__
-    'LOG',
-    'ESCAPE',   # enable the escape key for exiting the app
-    )
+    # 'ALL',
+    # 'VERBOSE',
+    # 'LOG',
+    'escape',   # enable 'ESCAPE' key to quit the Application
+    ]
 
-from tools import log_class
-_log = log_class(
-    "./logs/base.py.log" if _debug.flag('LOG') else ""
-    )
+if not __name__ == '__main__':
 
-if _debug.flag('TESTS'):
-    _test = debug_class(
-        "0.00",
-        )
+    from ULT_FRIDGE6_MONITOR.tools import debug_class
+    _debug = debug_class(*_DEBUG_FLAGS)
+
+    from ULT_FRIDGE6_MONITOR.tools import log_class
+    _log = log_class(_LOG_FILE if _debug.flag('LOG') else "")
 
 #####################################################################
-#                                                         ### IMPORTS
+#                                                             imports
 
 # from wxpython: https://www.wxpython.org/
 
@@ -85,9 +55,8 @@ from wx import EVT_ERASE_BACKGROUND as _wxEVT_ERASE_BACKGROUND
 from wx import Exit                 as _wxExit
 
 #####################################################################
-#                                                         ### LIBRARY
+#                                                          _basePanel
 
-# Quick Panel
 class _basePanel(_wxPanel):
 
     def __init__(self, parent):
@@ -128,7 +97,9 @@ class _basePanel(_wxPanel):
         #done
         return
 
-# Quick Frame
+#####################################################################
+#                                                            _baseFrm
+
 class _baseFrm(_wxFrame):
 
     def __init__(self):
@@ -153,11 +124,13 @@ class _baseFrm(_wxFrame):
         # done
         return
 
+#####################################################################
+#                                                                 app
+
 # When the ESCAPE flag is set you can use the
 # ESCAPE key to quit the Application. this is
 # used for a quick exit and debugging purposes.
  
-# Quick App
 class app(_wxApp):
 
     def OnInit(self):
@@ -208,45 +181,3 @@ class app(_wxApp):
 
         # done
         return
-
-_HISTORY["0.00"] = """
-    Add 'app' class:
-            
-        . 'app.__init__()' doesn't require any parameters.
-
-        . 'app.Start()', which must be overloaded by the user,
-        is used to initialise the user part of the app.
-        'app.Start()' is called automatically after the 'main
-        Window', the 'main Frame', and the 'main Panel' have
-        been instantiated.
-        
-        . 'app.Run()' is used to run the app and must be called
-        by the user after the app instantiation.
-
-    """
-
-#####################################################################
-#                                                           ### TESTS
-
-if __name__ == "__main__":
-
-    if _debug.flag('verbose'):
-
-        _log.boxprint('verbose')
-        _log.os_version()
-        _log.python_version()
-        _log.file_header()
-        _log.history(_HISTORY)
-
-    if _debug.flag('tests'):
-
-        _log.boxprint('tests')
-
-        if _test.flag('0.00'):
-            _log.print(" . running test for version 0.00")
-
-            # instantiate and run the app
-            a = app()
-            a.Run()
-
-            _log.print(" . end test for version 0.00")

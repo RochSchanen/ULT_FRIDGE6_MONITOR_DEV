@@ -1,11 +1,12 @@
 # file: tools.py
 # content: debug and logging tools
 # created: 2025 April 17
-# modified: 2025 April 22
+# modified: 2025 April 30
 # author: Roch Schanen
 # repository: https://github.com/RochSchanen/ULT_FRIDGE6_MONITOR_DEV
 
 #####################################################################
+#                                                         debug_class
 
 class debug_class():
 
@@ -23,6 +24,7 @@ class debug_class():
         return True
 
 #####################################################################
+#                                                           log_class
 
 class log_class():
 
@@ -34,7 +36,8 @@ class log_class():
 
     def __del__(self):
         # close log file
-        self.file_handle.close()
+        if self.file_handle:
+            self.file_handle.close()
         # done
         return
 
@@ -84,6 +87,7 @@ class log_class():
         return
 
 #####################################################################
+#                                                          path_class
 
 class path_class():
 
@@ -108,3 +112,17 @@ class path_class():
                 filepath = fp
         # done
         return filepath
+
+#####################################################################
+
+_LOG_FILE = f".logs/tools.py.log"
+
+_DEBUG_FLAGS = [
+    'NONE',
+    # 'ALL',
+    # 'VERBOSE',
+    # 'LOG',
+    ]
+
+_debug = debug_class(*_DEBUG_FLAGS)
+_log = log_class(_LOG_FILE if _debug.flag('LOG') else "")

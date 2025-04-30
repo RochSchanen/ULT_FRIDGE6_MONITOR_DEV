@@ -1,84 +1,43 @@
 # file: theme.py
 # content: image collection manager
 # created: 2025 April 22
-# modified: 2025 April 24
+# modified: 2025 April 30
 # author: Roch Schanen
 # repository: https://GitHub.com/RochSchanen/ULT_FRIDGE6_MONITOR_DEV
 
-#####################################################################
-#                                                     ### DESCRIPTION
-_DESCRIPTION = """   
-    
-    --- motivation ---
+_LOG_FILE = f".logs/theme.py.log"
 
-        This is a library to help collect images from a set of .png
-        files and to filter and select groups of images from the
-        library of images thus collected. These are meant to be used
-        for background, buttons, switches, etc...
-
-"""
-
-#####################################################################
-#                                                         ### HISTORY
-_HISTORY = {
-
-    "0.00": """
-        add 'images()' class:
-
-            . images.__init__() doesn't requires any parameters.
-
-            . images.load(name, *tags) is used to collect images
-            from a .png file. Use tags parameters to select which
-            images are collected from the file. The tags are
-            defined in the .png.txt file that should be next to the
-            .png file. Multiple loads can be performed from the
-            same file. Duplicates are automatically removed.
-
-            . images.select(name, *tags) is used to select a subset
-            of images that were loaded from a .png file. Use the tags
-            parameters to select and order the images. The methods
-            returns the images as a list. If there only one image in
-            the list, the method returns directly the image and not
-            an list of one image. 
-
-            . check test 0.00 for examples of how to load and select
-            images.
-    """,
-}
-
-#####################################################################
-#                                                           ### DEBUG
-from tools import debug_class
-_debug = debug_class(
+_DEBUG_FLAGS = [
+    'NONE',
     # 'ALL',
-    # 'NONE',
     # 'VERBOSE',
-    'TESTS',
-    'LOG',
-    )
+    # 'LOG',
+    ]
+
+if not __name__ == '__main__':
+
+    from ULT_FRIDGE6_MONITOR.tools import debug_class
+    _debug = debug_class(*_DEBUG_FLAGS)
+
+    from ULT_FRIDGE6_MONITOR.tools import log_class
+    _log = log_class(_LOG_FILE if _debug.flag('LOG') else "")
 
 #####################################################################
-#                                                             ### LOG
-from tools import log_class
-_log = log_class("./logs/theme.py.log" if _debug.flag('LOG') else "")
+#                                                              import
 
-#####################################################################
-#                                                            ### TEST
-if _debug.flag('TESTS'):
-    _test = debug_class(
-        sorted(_HISTORY)[-1],   # run last version
-        # "X.XX",               # run version X.XX
-        )
-
-#####################################################################
-#                                                         ### IMPORTS
 # from wxpython: https://www.wxpython.org/
+
+# images
 from wx import Bitmap           as _wxBitmap
 from wx import BITMAP_TYPE_PNG  as _wxBITMAP_TYPE_PNG
 from wx import Rect             as _wxRect
 
+# local
+from ULT_FRIDGE6_MONITOR.tools import path_class
+
 #####################################################################
-#                                                         ### LIBRARY
+#                                                              images
+
 class images():
 
     def __init__(self):
@@ -106,7 +65,6 @@ class images():
 
     def load(self, name, *tags):
         # get path to the image
-        from tools import path_class
         path = path_class()
         fp = path.find(f'{name}.png')
         # load image bitmap
@@ -166,64 +124,3 @@ class images():
         if len(r) == 1:
             return r[0]
         return r
-
-#####################################################################
-#                                                           ### TESTS
-#
-if __name__ == "__main__":
-
-    if _debug.flag('verbose'):
-
-        _log.boxprint('verbose')
-        _log.os_version()
-        _log.python_version()
-        _log.file_header()
-        _log.history(_HISTORY)
-
-    if _debug.flag('tests'):
-        _log.boxprint('tests')
-
-        if _test.flag('0.00'):
-            
-            _log.print(" . running test for version 0.00")
-
-            from wx import MemoryDC   as _wxMemoryDC
-            from wx import NullBitmap as _wxNullBitmap
-            from base import app
-
-            # derive a new class from app
-            class myapp(app):
-
-                def Start(self):
-
-                    # instanciate image library
-                    library = images()
-                    
-                    # load background bitmap (all of the images)
-                    library.load('bkgd')
-                    # use background bitmap
-                    self.Panel.BackgroundBitmap = library.select('bkgd')
-                    
-                    # load led bitmaps (blue and red only)
-                    library.load('leds', ['red', 'blue'])
-                    # create device context
-                    dc = _wxMemoryDC()
-                    
-                    # select screen bitmap
-                    dc.SelectObject(self.Panel.BackgroundBitmap)
-                    # draw led
-                    dc.DrawBitmap(library.select('leds',  'red',   'on'),  100, 100)
-                    dc.DrawBitmap(library.select('leds',  'red',  'off'),  100, 120)
-                    dc.DrawBitmap(library.select('leds', ('blue',  'on')), 200, 100)
-                    dc.DrawBitmap(library.select('leds', ('blue', 'off')), 200, 120)
-                    
-                    # release screen bitmap
-                    dc.SelectObject(_wxNullBitmap)
-                    
-                    # done
-                    return
-            
-            m = myapp()
-            m.Run()
-
-            _log.print(" . end test for version 0.00")
