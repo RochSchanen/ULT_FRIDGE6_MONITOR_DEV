@@ -5,22 +5,25 @@
 # author: Roch Schanen
 # repository: https://GitHub.com/RochSchanen/ULT_FRIDGE6_MONITOR_DEV
 
-_LOG_FILE = f".logs/theme.py.log"
+_LOG_FILE = f"../tests/.logs/theme.py.log"
 
 _DEBUG_FLAGS = [
-    'NONE',
+    # 'NONE',
     # 'ALL',
     # 'VERBOSE',
     # 'LOG',
+    'import',
     ]
 
-if not __name__ == '__main__':
+if 'import' in _DEBUG_FLAGS: # un-installed package
+    import sys
+    sys.path.insert(1, '..')
 
-    from ULT_FRIDGE6_MONITOR.tools import debug_class
-    _debug = debug_class(*_DEBUG_FLAGS)
+from ULT_FRIDGE6_MONITOR.tools import debug_class
+_debug = debug_class(*_DEBUG_FLAGS)
 
-    from ULT_FRIDGE6_MONITOR.tools import log_class
-    _log = log_class(_LOG_FILE if _debug.flag('LOG') else "")
+from ULT_FRIDGE6_MONITOR.tools import log_class
+_log = log_class(_LOG_FILE if _debug.flag('LOG') else "")
 
 #####################################################################
 #                                                              import
