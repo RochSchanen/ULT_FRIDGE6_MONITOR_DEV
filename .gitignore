@@ -1,2 +1,3 @@
 *.sublime-workspace
 .local/FRDG6MNTR.sublime-workspace
+__pycache__
