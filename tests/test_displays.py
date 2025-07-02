@@ -5,7 +5,7 @@
 # author: Roch Schanen
 # repository: https://github.com/RochSchanen/ULT_FRIDGE6_MONITOR_DEV
 
-_LOG_FILE = f".logs/test_tools.py.log"
+_LOG_FILE = f".logs/test_display.py.log"
 
 _DEBUG_FLAGS = [
     # 'NONE',
@@ -17,8 +17,8 @@ _DEBUG_FLAGS = [
     ]
 
 _TEST_FLAGS = [
-    'leds',
-    'numerics'
+    # 'leds',
+    'fixdisplay'
     ]
 
 #####################################################################
@@ -68,19 +68,22 @@ if _test.flag('leds'):
             # led 1
             self.led1 = display(
                 self.Panel,
-                self.library.select('leds', 'red', ['off', 'on']),
+                self.library.select('leds', 'red', 
+                    ['off', 'on']),
                 ['off', 'on'])
             self.led1.SetPosition((100, 100))
             
             # led 2
             self.led2 = display(
                 self.Panel,
-                self.library.select('leds', 'blue', ['off', 'on']),
-                ['off', 'on'])
+                self.library.select('leds', 'red',
+                    ['off', 'on']),
+                ['off', 'on'],
+                )
             self.led2.SetPosition((130, 100))
 
             self.led1.SetValue('on')
-            self.led2.SetValue(1)
+            self.led2.SetValue(0)
 
             # done
             return
@@ -93,3 +96,76 @@ if _test.flag('leds'):
 
     # done
     _log.print(" . end test leds")
+
+#####################################################################
+#                                                          fixdisplay
+
+if _test.flag('fixdisplay'):
+
+    _log.print(" . start test fixdisplay")
+
+    from ULT_FRIDGE6_MONITOR.base       import app
+    from ULT_FRIDGE6_MONITOR.theme      import images
+    from ULT_FRIDGE6_MONITOR.displays   import fixdisplay
+
+    # derive a new class from app
+    class myapp(app):
+
+        # setup app using Start()
+        def Start(self):
+            
+            # instanciate image library
+            self.library = images()
+            # load background bitmaps
+            # (all of the images in 'bkgd')
+            self.library.load('bkgd')
+
+            # load led bitmaps
+            self.library.load('digits', 'yellow', 'normal')
+            self.library.load('digits', 'void')
+            
+            # use background bitmap
+            # (only one image image definition in 'bkdg')
+            self.Panel.BackgroundBitmap = self.library.select('bkgd')
+
+            # fix point display
+            self.fd1 = fixdisplay(
+                self.Panel,
+                "6.2f",
+                self.library.select('digits',
+                    ['0', '1', '2', '3', '4', 
+                     '5', '6', '7', '8', '9',
+                     '.', 'void']),
+                ['0', '1', '2', '3', '4', 
+                 '5', '6', '7', '8', '9',
+                 '.', ' '],
+                )
+            self.fd1.SetPosition((100, 100))
+            self.fd1.SetValue(1.23)
+
+            # fix point display
+            self.fd2 = fixdisplay(
+                self.Panel,
+                "06.2f",
+                self.library.select('digits',
+                    ['0', '1', '2', '3', '4', 
+                     '5', '6', '7', '8', '9',
+                     '.', 'void']),
+                ['0', '1', '2', '3', '4', 
+                 '5', '6', '7', '8', '9',
+                 '.', ' '],
+                )
+            self.fd2.SetPosition((100, 130))
+            self.fd2.SetValue(1.23)
+
+            # done
+            return
+    
+    # instantiate app
+    m = myapp()
+
+    # run app
+    m.Run()
+
+    # done
+    _log.print(" . end test fixdisplay")

@@ -34,12 +34,12 @@ class log_class():
         # done
         return
 
-    def __del__(self):
-        # close log file
-        if self.file_handle:
-            self.file_handle.close()
-        # done
-        return
+    # def __del__(self):
+    #     # close log file
+    #     if self.file_handle:
+    #         self.file_handle.close()
+    #     # done
+    #     return
 
     def print(self, *args, **kwargs):
         print(*args, **kwargs)
@@ -115,7 +115,7 @@ class path_class():
 
 #####################################################################
 
-_LOG_FILE = f".logs/tools.py.log"
+_LOG_FILE = f"../tests/.logs/tools.py.log"
 
 _DEBUG_FLAGS = [
     'NONE',
