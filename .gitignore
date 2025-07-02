@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 __pycache__
 
 test/.local
@@ -7,8 +6,3 @@ test/.obsolete
 test/__pycache__
 
 ULT_FRIDGE6_MONITOR/__pycache__
-=======
-*.sublime-workspace
-.local/FRDG6MNTR.sublime-workspace
-__pycache__
->>>>>>> origin/main
