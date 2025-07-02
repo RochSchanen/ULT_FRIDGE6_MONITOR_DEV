@@ -1,2 +1,8 @@
-*.sublime-workspace
-.local/FRDG6MNTR.sublime-workspace
+__pycache__
+
+test/.local
+test/.logs
+test/.obsolete
+test/__pycache__
+
+ULT_FRIDGE6_MONITOR/__pycache__

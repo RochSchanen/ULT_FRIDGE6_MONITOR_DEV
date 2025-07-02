@@ -14,17 +14,21 @@ _DEBUG_FLAGS = [
     'log',
     'tests',
     'import',
-    ]
+]
 
 _TEST_FLAGS = [
     'leds',
-    ]
+]
 
 #####################################################################
+#                                                              IMPORT
+#####################################################################
 
-if 'import' in _DEBUG_FLAGS: # test the un-installed package
+
+if 'import' in _DEBUG_FLAGS:    # test the un-installed package
     import sys
-    sys.path.insert(1, '..')
+
+exit()
 
 from ULT_FRIDGE6_MONITOR.tools import debug_class
 _debug = debug_class(*_DEBUG_FLAGS)
