@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"scr",
+				"script_path"
+			],
+			[
 				"set",
 				"SetValue"
 			],
@@ -243,142 +247,30 @@
 	},
 	"buffers":
 	[
-		{
-			"file": "/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/tests/test_displays.py",
-			"settings":
-			{
-				"buffer_size": 2497,
-				"encoding": "UTF-8",
-				"line_ending": "Windows"
-			},
-			"undo_stack":
-			[
-				[
-					3,
-					1,
-					"insert",
-					{
-						"characters": "\n"
-					},
-					"AgAAAHYBAAAAAAAAdwEAAAAAAAAAAAAAdwEAAAAAAAB7AQAAAAAAAAAAAAA",
-					"AwAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAHYBAAAAAAAAdgEAAAAAAAAAAAAAAADwvw"
-				],
-				[
-					4,
-					1,
-					"insert_snippet",
-					{
-						"contents": "'$0'"
-					},
-					"AQAAAHsBAAAAAAAAfQEAAAAAAAAAAAAA",
-					"AwAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAHsBAAAAAAAAewEAAAAAAAAAAAAAAADwvw"
-				],
-				[
-					5,
-					1,
-					"insert",
-					{
-						"characters": "numeric"
-					},
-					"BwAAAHwBAAAAAAAAfQEAAAAAAAAAAAAAfQEAAAAAAAB+AQAAAAAAAAAAAAB+AQAAAAAAAH8BAAAAAAAAAAAAAH8BAAAAAAAAgAEAAAAAAAAAAAAAgAEAAAAAAACBAQAAAAAAAAAAAACBAQAAAAAAAIIBAAAAAAAAAAAAAIIBAAAAAAAAgwEAAAAAAAAAAAAA",
-					"AwAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAHwBAAAAAAAAfAEAAAAAAAAAAAAAAADwvw"
-				],
-				[
-					6,
-					1,
-					"insert",
-					{
-						"characters": "s"
-					},
-					"AQAAAIMBAAAAAAAAhAEAAAAAAAAAAAAA",
-					"AwAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAIMBAAAAAAAAgwEAAAAAAAAAAAAAAADwvw"
-				]
-			]
-		},
-		{
-			"contents": "# file: elements.py\n# content: \n# created: 2025 April 27\n# modified: 2025 April 27\n# author: Roch Schanen\n# repository: https://GitHub.com/RochSchanen/ULT_FRIDGE6_MONITOR_DEV\n\n_LOG_FILE = f\".logs/displays.py.log\"\n\n_DEBUG_FLAGS = [\n    'NONE',\n    # 'ALL',\n    # 'VERBOSE',\n    # 'LOG',\n    ]\n\nif not __name__ == '__main__':\n\n    from ULT_FRIDGE6_MONITOR.tools import debug_class\n    _debug = debug_class(*_DEBUG_FLAGS)\n\n    from ULT_FRIDGE6_MONITOR.tools import log_class\n    _log = log_class(_LOG_FILE if _debug.flag('LOG') else \"\")\n\n#####################################################################\n#                                                             imports\n\n# from wxpython: https://www.wxpython.org/\n\n# display\nfrom wx import Control                  as _wxControl\nfrom wx import ID_ANY                   as _wxID_ANY\nfrom wx import DefaultPosition          as _wxDefaultPosition\nfrom wx import DefaultSize              as _wxDefaultSize\nfrom wx import NO_BORDER                as _wxNO_BORDER\nfrom wx import DefaultValidator         as _wxDefaultValidator\nfrom wx import EVT_ERASE_BACKGROUND     as _wxEVT_ERASE_BACKGROUND\nfrom wx import EVT_PAINT                as _wxEVT_PAINT\nfrom wx import BufferedPaintDC          as _wxBufferedPaintDC\n\n#####################################################################\n#                                                             display\n\nclass display(_wxControl):\n    \n    # superseed __init__()\n    def __init__(self, parent, bitmaps, names = None):\n        \n        # call parent __init__()\n        _wxControl.__init__(\n            self,\n            parent      = parent,\n            id          = _wxID_ANY,\n            pos         = _wxDefaultPosition,\n            size        = _wxDefaultSize,\n            style       = _wxNO_BORDER,\n            validator   = _wxDefaultValidator,\n            name        = \"\",\n            )\n        \n        # parameters\n        self.parent  = parent\n        self.bitmaps = bitmaps\n        self.names   = names\n\n        # locals\n\n        # status is an index or a name\n        self.status = 0\n        \n        # get png size from first image\n        w, h = self.bitmaps[self.status].GetSize()\n\n        # set display size\n        self.SetSize((w, h))\n        \n        # BINDINGS\n        self.Bind(_wxEVT_ERASE_BACKGROUND, self._onEraseBackground)\n        self.Bind(_wxEVT_PAINT, self._onPaint)\n\n        # done\n        return\n\n    def _onEraseBackground(self, event):\n        # no operation to reduce flicker\n        pass \n\n    def _onPaint(self, event):\n        v = self.status\n        if isinstance(v, int): n = v\n        if isinstance(v, str): n = self.names.index(v)\n        dc = _wxBufferedPaintDC(self)\n        dc.DrawBitmap(self.bitmaps[n], 0, 0)\n        return\n\n    def SetValue(self, Value):\n        self.status = Value\n        self.Refresh()\n        return\n\n    def GetValue(self):\n        return self.status\n\n#####################################################################\n#                                                            fixpoint\n\n\n",
-			"file": "/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/ULT_FRIDGE6_MONITOR/displays.py",
-			"file_size": 3170,
-			"file_write_time": 133904942316712130,
-			"settings":
-			{
-				"buffer_size": 3065,
-				"line_ending": "Windows"
-			},
-			"undo_stack":
-			[
-				[
-					5,
-					1,
-					"insert",
-					{
-						"characters": "\n"
-					},
-					"AQAAAGoLAAAAAAAAawsAAAAAAAAAAAAA",
-					"AwAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAGoLAAAAAAAAagsAAAAAAAAAAAAAAADwvw"
-				],
-				[
-					11,
-					1,
-					"paste",
-					null,
-					"AQAAAGsLAAAAAAAA9gsAAAAAAAAAAAAA",
-					"AwAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAGsLAAAAAAAAawsAAAAAAAAAAAAAAADwvw"
-				],
-				[
-					12,
-					1,
-					"insert",
-					{
-						"characters": "\n\n"
-					},
-					"AgAAAPYLAAAAAAAA9wsAAAAAAAAAAAAA9wsAAAAAAAD4CwAAAAAAAAAAAAA",
-					"AwAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAPYLAAAAAAAA9gsAAAAAAAAAAAAAAADwvw"
-				],
-				[
-					13,
-					1,
-					"insert",
-					{
-						"characters": "fixpoint"
-					},
-					"CQAAAO8LAAAAAAAA8AsAAAAAAAAAAAAA8AsAAAAAAADwCwAAAAAAAAcAAABkaXNwbGF58AsAAAAAAADxCwAAAAAAAAAAAADxCwAAAAAAAPILAAAAAAAAAAAAAPILAAAAAAAA8wsAAAAAAAAAAAAA8wsAAAAAAAD0CwAAAAAAAAAAAAD0CwAAAAAAAPULAAAAAAAAAAAAAPULAAAAAAAA9gsAAAAAAAAAAAAA9gsAAAAAAAD3CwAAAAAAAAAAAAA",
-					"AgAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAADvCwAAAAAAAPYLAAAAAAAAAAAAAAAA8L8"
-				],
-				[
-					15,
-					1,
-					"insert",
-					{
-						"characters": "dig"
-					},
-					"AwAAAO8LAAAAAAAA8AsAAAAAAAAAAAAA8AsAAAAAAADxCwAAAAAAAAAAAADxCwAAAAAAAPILAAAAAAAAAAAAAA",
-					"AgAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAADvCwAAAAAAAO8LAAAAAAAAAAAAAAAA8L8"
-				],
-				[
-					16,
-					4,
-					"left_delete",
-					null,
-					"BAAAAPELAAAAAAAA8QsAAAAAAAABAAAAZ/ALAAAAAAAA8AsAAAAAAAABAAAAae8LAAAAAAAA7wsAAAAAAAABAAAAZO4LAAAAAAAA7gsAAAAAAAABAAAAIA",
-					"AgAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAADyCwAAAAAAAPILAAAAAAAAAAAAAAAA8L8"
-				],
-				[
-					18,
-					1,
-					"insert",
-					{
-						"characters": "\n"
-					},
-					"AQAAAPcLAAAAAAAA+AsAAAAAAAAAAAAA",
-					"AgAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAD3CwAAAAAAAPcLAAAAAAAAAAAAAAAA8L8"
-				]
-			]
-		}
 	],
-	"build_system": "",
+	"build_system": "Anaconda Python Builder",
 	"build_system_choices":
 	[
+		[
+			[
+				[
+					"Anaconda Python Builder",
+					""
+				],
+				[
+					"Packages/Python/Python.sublime-build",
+					""
+				],
+				[
+					"Packages/Python/Python.sublime-build",
+					"Syntax Check"
+				]
+			],
+			[
+				"Anaconda Python Builder",
+				""
+			]
+		],
 		[
 			[
 				[
@@ -510,16 +402,25 @@
 		"side_bar_visible": false,
 		"status_bar_visible": false
 	},
-	"expanded_folders":
-	[
-		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV",
-		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/docs",
-		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/tests",
-		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/tests/.logs",
-		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/ULT_FRIDGE6_MONITOR"
-	],
 	"file_history":
 	[
+		"/?luna/FST/PY/Milikelvin/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/tests/p.py",
+		"/?luna/FST/PY/Milikelvin/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/tests/config.py",
+		"/?luna/FST/PY/Milikelvin/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/tests/test_tools.py",
+		"/?luna/FST/PY/Milikelvin/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/tests/test_displays.py",
+		"/?luna/FST/PY/Milikelvin/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/tests/test_buttons.py",
+		"/?luna/FST/PY/Milikelvin/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/ULT_FRIDGE6_MONITOR/__init__.py",
+		"/?luna/FST/PY/Milikelvin/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/ULT_FRIDGE6_MONITOR/base.py",
+		"/?luna/FST/PY/Milikelvin/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/ULT_FRIDGE6_MONITOR/buttons.py",
+		"/?luna/FST/PY/Milikelvin/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/ULT_FRIDGE6_MONITOR/displays.py",
+		"/?luna/FST/PY/Milikelvin/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/ULT_FRIDGE6_MONITOR/theme.py",
+		"/?luna/FST/PY/Milikelvin/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/ULT_FRIDGE6_MONITOR/tools.py",
+		"/?luna/FST/PY/Milikelvin/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/.gitignore",
+		"/?luna/FST/PY/Milikelvin/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/tests/.gitignore",
+		"/C/Users/schanen/AppData/Roaming/Sublime Text/Packages/Anaconda/Anaconda.sublime-settings",
+		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/ULT_FRIDGE6_MONITOR/displays.py",
+		"/C/Users/schanen/AppData/Roaming/Sublime Text/Packages/User/Python.sublime-settings",
+		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/tests/test_displays.py",
 		"/?luna.lancs.ac.uk/FST/PY/Milikelvin/He4_fridge/TorsionOscillator-RochDropbox/Calculations/python/torsion_oscillator_calibration.py",
 		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/tests/test_buttons.py",
 		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/ULT_FRIDGE6_MONITOR/buttons.py",
@@ -529,8 +430,6 @@
 		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/ULT_FRIDGE6_MONITOR/display.py",
 		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/ULT_FRIDGE6_MONITOR/base.py",
 		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/ULT_FRIDGE6_MONITOR/tools.py",
-		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/tests/test_displays.py",
-		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/ULT_FRIDGE6_MONITOR/displays.py",
 		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/test_tools.py",
 		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/obsolete/codebit_CONFIG.py",
 		"/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/tools.py",
@@ -632,26 +531,11 @@
 		"/media/schanen/B4AA-B574/recycle/links.txt",
 		"/home/schanen/Documents.txt",
 		"/home/schanen/Documents/work/python/pylvinox/pylvinox.py",
-		"/home/schanen/directories.txt",
-		"/home/schanen/Documents/work/Capacitance-Report/CapacitanceComputationReport.tex",
-		"/home/schanen/Documents/work/python/pyvigi_dev/pyvigi/theme.py",
-		"/home/schanen/Documents/work/python/pyvigi_dev/re_install_pyvigi",
-		"/home/schanen/Documents/work/python/pylvinox/quickscript.py",
-		"/home/schanen/Documents/work/python/pylvinox/documentation/IMG_20200918_185347.jpg",
-		"/home/schanen/Documents/work/LIA/LIA.txt",
-		"/home/schanen/IceStorm/icestorm/README",
-		"/home/schanen/Documents/backups/BARE_1/programing/Compiler - 2019 10 - Strike 1/prgfile.txt",
-		"/home/schanen/Documents/backups/BARE_1/programing/Compiler - 2019 10 - Strike 1/CircuitDefinition.txt",
-		"/home/schanen/q.log",
-		"/mnt/4098BE5598BE48E4/Platform/1. Administrative/Lancaster/Notes_InclusiveDiversity.txt",
-		"/home/schanen/Documents/work/Computations/python/prjs/vmap/vmap.py",
-		"/home/schanen/Documents/work/Computations/python/libs/backends.py",
-		"/home/schanen/Documents/admin/remarkable2/tmp.txt",
-		"/home/schanen/Documents/work/Capacitance-Report/poissonsolution.pdf"
+		"/home/schanen/directories.txt"
 	],
 	"find":
 	{
-		"height": 29.0
+		"height": 28.0
 	},
 	"find_in_files":
 	{
@@ -665,6 +549,10 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"E309",
+			"E401",
+			"E40",
+			"E402",
 			"_TESTS",
 			"_FLAGS",
 			"_LOGFILE",
@@ -761,81 +649,17 @@
 		{
 			"sheets":
 			[
-				{
-					"buffer": 0,
-					"file": "/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/tests/test_displays.py",
-					"selected": true,
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2497,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								660,
-								660
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"stack_multiselect": false,
-					"type": "text"
-				}
 			]
 		},
 		{
 			"sheets":
 			[
-				{
-					"buffer": 1,
-					"file": "/L/fridge_6/2. SOFTWARE/python/ULT_FRIDGE6_MONITOR_DEV/ULT_FRIDGE6_MONITOR/displays.py",
-					"selected": true,
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 3065,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								3064,
-								3064
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 1135.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"stack_multiselect": false,
-					"type": "text"
-				}
 			]
 		}
 	],
 	"incremental_find":
 	{
-		"height": 29.0
+		"height": 28.0
 	},
 	"input":
 	{
@@ -873,21 +697,27 @@
 	"menu_visible": true,
 	"output.exec":
 	{
-		"height": 205.0
+		"height": 309.0,
+		"history":
+		[
+		]
 	},
 	"output.find_results":
 	{
-		"height": 0.0
+		"height": 0.0,
+		"history":
+		[
+		]
 	},
 	"output.latextools":
 	{
 		"height": 179.0
 	},
-	"pinned_build_system": "",
+	"pinned_build_system": "Packages/Python/Python.sublime-build",
 	"project": "FRDG6MNTR.sublime-project",
 	"replace":
 	{
-		"height": 54.0
+		"height": 52.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -925,7 +755,7 @@
 	"show_open_files": true,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 237.0,
+	"side_bar_width": 134.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{
