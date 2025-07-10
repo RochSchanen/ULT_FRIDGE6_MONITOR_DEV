@@ -3,12 +3,16 @@
 # author: Roch Schanen
 
 from sys import exit
+from time import time
 from time import strftime
 from time import localtime
 from time import monotonic
-# from time import sleep
+from time import sleep
 from time import perf_counter
+from datetime import datetime
 from socket import gethostname
+from threading import Thread
+
 # from os.path import exists
 
 
@@ -20,7 +24,8 @@ _DEBUG = [
     # VERBOSE,
     # "NONE",
     "TEMPFILE",
-    "SINGLE",
+    "SHOWDATA",
+    # "SINGLE",
     "LOG",
 ]
 
@@ -58,7 +63,7 @@ configuration = {
         # "REMOTEFILEPATH": None,
 
         "LOCALFILEPATH": '.',
-        "SAVINGINTERVALS": 0.2,
+        "SAVINGINTERVALS": 5.0,
 
         "TEMPFILEPATH": '.',
         "TEMPFILENAME": 'tmp.dat',
@@ -70,12 +75,13 @@ configuration = {
 #####################################################################
 #                                                               SETUP
 
-dn = configuration["DEVICENAME"]
+setup = {
+    "MESUREMENTINTERVAL": 0.5,  # [S]
+}
 
+dn = configuration["DEVICENAME"]
 lfp = configuration["LOCALFILEPATH"]
 tfp = configuration["TEMPFILEPATH"]
-
-dt = 0.20  # time intervals [s]
 
 
 #####################################################################
@@ -98,7 +104,7 @@ class monitor_file():
             fh.close()
         # declare header text and data list
         self.headertext, self.data = "", []
-        # setup saving timer (flush data every 'SAVINGINTERVALS')
+        # setup timer
         self.time = monotonic() + configuration['SAVINGINTERVALS']
         # done
         return
@@ -111,7 +117,7 @@ class monitor_file():
     def writeheaderblock(self, b):
         for i, l in enumerate(b.split(f"\n")[1:-1]):
             if i == 0: n = len(l) - len(l.lstrip())
-            self.headertext += f"{l[n:]}\n"
+            self.headertext += f"# {l[n:]}\n"
         return
 
     def savedata(self):
@@ -140,20 +146,6 @@ class monitor_file():
         self.savedata()
         # done
         return
-
-
-# instanciate file
-fh = monitor_file(lfp, "GHS_monitor_local_data_")
-
-fh.writeheaderblock(f"""
-file.local   :  {lfp.split('/')[-1]}
-intervals    :  {dt}s
-column 1     :  time stamp [HH:MM:SS.F]
-column 2     :  seconds [s]
-column 3     :  leak rate [mbar.l/s]
-""")
-
-# file.remote  :  {rfp.split('/')[-1]}
 
 
 #####################################################################
@@ -230,7 +222,7 @@ class USB6008():
         astr = self.ah.read()
         dstr = self.dh.read()
         # return data
-        return f"{astr}, {dstr}"
+        return astr + dstr
 
 
 #####################################################################
@@ -256,140 +248,122 @@ if _debug("single"):
     u.Stop()
     u.Close()
 
-    exit()
-
-# fh.writedata("")
-# fh.flushdata()
 
 # #####################################################################
+#                                                                  LOOP
 
-# from datetime import datetime
-# from time import sleep, time
-#                                                                # LOOP
-# def RunningThread():
+def RunningThread():
 
-#     if _debug("showdata"):
-#         i = 0 # init var
+    if _debug("SHOWDATA"): i = 0  # init var
 
-#     ii, W = 0, []
+    while Running:
 
-#     while Running:
+        if _debug("SHOWDATA"): print(f"COUNT #{i:02} ")
 
-#         if _debug("showdata"):
-#             print(f"COUNT #{i:02} ")
+        # -------------------- MEASUREMENTS INTERVAL --------------------
 
-#         ########## DELAY
+        sleep(setup['MESUREMENTINTERVAL'])
 
-#         sleep(dt)
+        # -------------------- RETRIEVE MEASUREMENTS --------------------
 
-#         ########## RETRIEVE
+        # get time stamp
+        ts = datetime.now().strftime('%H:%M:%S.%f')
 
-#         # get time stamp
-#         ts = datetime.now().strftime('%H:%M:%S.%f')
+        # get pressures and warnings
+        data = u.Read()
+        P_ST, P_RB, P_RS, P_AI, P_AO, P_TR, P_CD, P_PT = data[:8]
+        F_BP, F_BT, F_SP, F_ST, F_AI, F_AO, F_OS, F_OP = data[8:]
 
-#         # get decade, mantisse
-#         d, m = u.Read()
+        if _debug("SHOWDATA"): print(data)
 
-#         if _debug("showdata"):
-#             print("ts, d, m = ", ts, d, m)
+        # -------------------- ANALYSE --------------------
+        s = time()
+        # compute pressure values, flow rate, ...
 
-#         ########## ANALYSE
+        # -------------------- RECORD --------------------
 
-#         # get time in seconds from the begining of the day
-#         # H, M, S = ts.split(":")
-#         # s = int(H)*3600 + int(M)*60 + float(S)
-#         s = time()
+        # record data
+        w = f"{ts[:-5]}\t"
+        w += f"{s:12.1f}\t"
+        w += f"{P_ST:8.3e}\t"
+        w += f"{P_RB:8.3e}\t"
+        w += f"{P_RS:8.3e}\t"
+        w += f"{P_AI:8.3e}\t"
+        w += f"{P_AO:8.3e}\t"
+        w += f"{P_TR:8.3e}\t"
+        w += f"{P_CD:8.3e}\t"
+        w += f"{P_PT:8.3e}\t"
+        w += f"{['ON', 'OFF'][F_BP]}\t"
+        w += f"{['ON', 'OFF'][F_BT]}\t"
+        w += f"{['ON', 'OFF'][F_SP]}\t"
+        w += f"{['ON', 'OFF'][F_ST]}\t"
+        w += f"{['ON', 'OFF'][F_AI]}\t"
+        w += f"{['ON', 'OFF'][F_AO]}\t"
+        w += f"{['ON', 'OFF'][F_OS]}\t"
+        w += f"{['ON', 'OFF'][F_OP]}"
 
-#         # COMPUTE LEAK RATE FROM MANTISSE AND DECADE VOLTAGES
-#         # "RECORDER mode" must be "LR"
-#         # (menu 13 on leak detector UL200+)
-#         # The manual can be found at:
-#         # \\luna\FST\PY\Milikelvin\...
-#         # ...Manuals_MagnetsAndDevices_calibrations\...
-#         # ...LeakDetector_Leybold_ul-200.pdf
-#         lr = m*10**(int(2*d-2.0+0.5)-12)
+        if _debug("SHOWDATA"):
+            print(w)
+            i += 1
 
-#         ########## RECORD
+        fh.writedata(w)
 
-#         # record data
-#         w = f"{ts[:-5]}\t{s:12.1f}\t{lr:8.3e}\n"
+    # finalise thread
+    fh.flushdata()
+    # done (thread ends here)
+    return
 
-#         if _debug("showdata"): print(w)
 
-#         W.append(w)
-#         ii += 1
+# INSTANCIATE DEVICES
 
-#         # write list to file
-#         if ii>=5:
-#             # write and flush
-#             fh = open(flfp, 'a')
-#             while W:
-#                 w = W.pop(0)
-#                 fh.write(w)
-#             fh.flush()
-#             fh.close()
-#             ii = 0
+u = USB6008()
 
-#         ########## END
+# SETUP FILES
 
-#         if _debug("showdata"):
-#             i += 1
+fh = monitor_file(lfp, "GHS_monitor_local_data_")
+fh.writeheaderblock(f"""
+file      : {fh.fp.split('/')[-1]}
+column 01 : time stamp [HH:MM:SS.F]
+column 02 : time in seconds [s]
+column 03 : still pressure [bar]
+column 04 : big roots outlet pressure [bar]
+column 05 : small roots outlet pressure [bar]
+column 06 : ACP40 inlet [bar]
+column 07 : ACP40 outlet [bar]
+column 08 : pressure before traps [bar]
+column 09 : pressure after traps [bar] (condensing pressure)
+column 10 : 1K pot pressure [bar]
+column 11 : big roots high pressure warning
+column 12 : big roots high temperature warning
+column 13 : small roots high pressure warning
+column 14 : small roots high temperature warning
+column 15 : ACP40 inlet high pressure warning
+column 16 : ACP40 outlet high pressure warning
+column 17 : Override switch activated
+column 18 : Override plug inserted
+""")
 
-#     # done (thread ends here)
-#     return
+# SETUP DEVICES
 
-# ########## INSTANCIATE DEVICES
+u.Open()
+u.Configure()
+u.Start()
 
-# u = USB6008()
+# SETUP LOOP (THREAD)
 
-# ########## SETUP FILES
+LOOP = Thread(target=RunningThread)
+Running = True
+LOOP.start()
 
-# # open file
-# fh = open(flfp, 'w')
+# run until user press enter
+i = input()
+print("--- INTERRUPTING ---")
+Running = False
 
-# # flush header
-# flushheader(fh)
+# FINALISING
 
-# fh.close()
-
-# ########## SETUP DEVICES
-
-# u.Open()
-# u.Configure()
-# u.Start()
-
-# ########## MAIN LOOP (THREAD)
-
-# from threading import Thread as thread
-
-# # create/configure thread
-# LOOP = thread(target = RunningThread)
-
-# # setup environment
-# Running = True
-
-# # start
-# LOOP.start()
-
-# # get any user input (press ENTER to interrupt)
-# i = input()
-# print("--- INTERRUPTING ---")
-
-# # clear running flag -> signal thread to interrupt
-# Running = False
-
-# # wait for LOOP to complete
-# LOOP.join()
-
-# ########## CLOSE/RELEASE DEVICES
-
-# u.Stop()
-# u.Close()
-
-# ########## CLOSE/RELEASE FILES
-
-# fh.close()
-
-# ########## EXIT
-
-# exit()
+LOOP.join()
+u.Stop()
+u.Close()
+fh.flushdata()
+exit()
