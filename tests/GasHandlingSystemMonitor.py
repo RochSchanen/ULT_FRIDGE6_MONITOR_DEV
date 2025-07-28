@@ -15,6 +15,7 @@ from threading import Thread
 
 # from os.path import exists
 
+VERSION = "0.00"
 
 #####################################################################
 #                                                               DEBUG
@@ -23,10 +24,9 @@ _DEBUG = [
     # "ALL",
     # VERBOSE,
     # "NONE",
-    "TEMPFILE",
-    "SHOWDATA",
+    # "TEMPFILE",
+    # "SHOWDATA",
     # "SINGLE",
-    "LOG",
 ]
 
 
@@ -56,11 +56,14 @@ if _debug(): print(f"identified hostname '{gethostname()}'")
 #####################################################################
 #                                                              CONFIG
 configuration = {
-    "LU-CZC2098L9S": {
+
+    # "LU-CZC2098L9S": {
+
+    "LU-S4KT4696": {
 
         "DEVICENAME": "Dev1",
 
-        # "REMOTEFILEPATH": None,
+        "FILEPATH": "//luna/FST/PY/Milikelvin/fridge_6/0.MEASUREMENTS/RUN2025-0",
 
         "LOCALFILEPATH": '.',
         "SAVINGINTERVALS": 5.0,
@@ -76,11 +79,11 @@ configuration = {
 #                                                               SETUP
 
 setup = {
-    "MESUREMENTINTERVAL": 0.5,  # [S]
+    "MESUREMENTINTERVAL": 1,  # [S]
 }
 
 dn = configuration["DEVICENAME"]
-lfp = configuration["LOCALFILEPATH"]
+lfp = configuration["FILEPATH"]
 tfp = configuration["TEMPFILEPATH"]
 
 
@@ -90,10 +93,11 @@ tfp = configuration["TEMPFILEPATH"]
 class monitor_file():
 
     def __init__(self, fp, fn):
+        # record time stamp
+        self.created = strftime(r'%Y%m%dT%H%M%S', localtime())
         #  new file path (time stamped)
         fp = fp.rstrip('/')
-        ts = strftime(r'%Y%m%dT%H%M%S', localtime())
-        self.fp = f"{fp}/{fn}{ts}.dat"
+        self.fp = f"{fp}/{fn}{self.created}.dat"
         # force fixed temporary file name for debugging
         if _debug("TEMPFILE"):
             fp = configuration['TEMPFILEPATH']
@@ -248,6 +252,8 @@ if _debug("single"):
     u.Stop()
     u.Close()
 
+    exit()
+
 
 # #####################################################################
 #                                                                  LOOP
@@ -320,12 +326,15 @@ u = USB6008()
 
 # SETUP FILES
 
-fh = monitor_file(lfp, "GHS_monitor_local_data_")
+fh = monitor_file(configuration['FILEPATH'], "GHS_")
 fh.writeheaderblock(f"""
 file      : {fh.fp.split('/')[-1]}
+content   : "Gas Handling System" raw data
+created   : {fh.created}
+author    : GasHandlingSystemMonitor.py V{VERSION}
 column 01 : time stamp [HH:MM:SS.F]
 column 02 : time in seconds [s]
-column 03 : still pressure [bar]
+column 03 : still pressure [bar] wrong -> this is the general thermovac display
 column 04 : big roots outlet pressure [bar]
 column 05 : small roots outlet pressure [bar]
 column 06 : ACP40 inlet [bar]
